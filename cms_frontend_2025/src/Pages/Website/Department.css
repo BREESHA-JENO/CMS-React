@@ -1,0 +1,83 @@
+/* Departments.css */
+
+/* Reset margins for sections */
+main, section, h2, h3, p {
+  margin: 0;
+  padding: 0;
+}
+
+/* Main container */
+main {
+  width: 100%;
+  margin: 0;
+  padding: 40px 0;
+  background-color: #f9fafc;
+  color: #333;
+  font-family: 'Arial', sans-serif;
+}
+
+/* Page title */
+main h2 {
+  font-size: 2.5rem;
+  color: #005b96;
+  text-align: center;
+  margin-bottom: 40px;
+  font-weight: 600;
+}
+
+/* Department section */
+section {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+/* Department title */
+section h3 {
+  font-size: 1.5rem;
+  color: #003087;
+  margin-bottom: 10px;
+  border-bottom: 2px solid #007bff;
+  display: inline-block;
+  padding-bottom: 5px;
+}
+
+/* Department description */
+section p {
+  font-size: 1rem;
+  color: #555;
+  line-height: 1.7;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  main {
+    padding: 30px 15px;
+  }
+
+  main h2 {
+    font-size: 2rem;
+  }
+
+  section h3 {
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  main {
+    padding: 20px 10px;
+  }
+
+  main h2 {
+    font-size: 1.8rem;
+  }
+
+  section h3 {
+    font-size: 1.1rem;
+  }
+
+  section p {
+    font-size: 0.95rem;
+  }
+}

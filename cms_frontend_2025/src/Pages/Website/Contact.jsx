@@ -1,11 +1,9 @@
 import React from "react";
-import Header from "../../Elements/Header";
 import logo from "../../Images/WhatsApp Image 2025-10-17 at 15.16.02.jpeg";
 
 const Contact = () => {
   return (
     <>
-      <Header />
       <main>
         <div className="contact-container">
           <section className="contact-form">
@@ -47,11 +45,6 @@ const Contact = () => {
           </section>
         </div>
       </main>
-
-      <footer>
-        <img src={logo} alt="Healthis Logo" className="logo" />
-        <p>© 2025 Healthis. All rights reserved.</p>
-      </footer>
     </>
   );
 };

@@ -1,11 +1,9 @@
 import React from "react";
-import Header from "../../Elements/Header";
-import logo from "../../Images/WhatsApp Image 2025-10-17 at 15.16.02.jpeg";
+import "./Department.css";
 
 const Departments = () => {
   return (
     <>
-      <Header />
       <main>
         <h2>Our Departments</h2>
         <section>
@@ -30,11 +28,6 @@ const Departments = () => {
           </p>
         </section>
       </main>
-
-      <footer>
-        <img src={logo} alt="Healthis Logo" className="logo" />
-        <p>© 2025 Healthis. All rights reserved.</p>
-      </footer>
     </>
   );
 };

@@ -1,0 +1,90 @@
+.our-doctors-container {
+  padding: 40px 20px;
+  background: #f9fafc;
+  text-align: center;
+}
+
+.page-title {
+  font-size: 2rem;
+  color: #003087;
+  margin-bottom: 40px;
+  font-weight: 600;
+}
+
+.department-section {
+  margin-bottom: 50px;
+}
+
+.department-title {
+  color: #005b96;
+  font-size: 1.5rem;
+  margin-bottom: 25px;
+  border-bottom: 2px solid #005b96;
+  display: inline-block;
+  padding-bottom: 5px;
+}
+
+.doctor-card-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 25px;
+}
+
+.doctor-card {
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  width: 240px;
+  padding: 15px;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.doctor-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+}
+
+.doctor-image {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.doctor-info {
+  margin-top: 10px;
+}
+
+.doctor-info h4 {
+  color: #003087;
+  font-size: 1.1rem;
+  margin-bottom: 5px;
+}
+
+.doctor-info p {
+  color: #555;
+  margin: 0;
+}
+
+.doctor-info small {
+  color: #777;
+  font-size: 0.85rem;
+}
+
+/* Footer styling */
+.footer {
+  background: #003087;
+  color: white;
+  text-align: center;
+  padding: 25px 10px;
+  margin-top: 50px;
+}
+
+.footer-logo {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  margin-bottom: 10px;
+}
