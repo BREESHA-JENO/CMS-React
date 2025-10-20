@@ -12,6 +12,7 @@ import './App.css';
 
 import Header from "./Elements/Header";
 import Footer from "./Elements/Footer";
+import LoginContainer from "./components/Login/LoginContainer";
 // Module dashboards (protected)
 // import AdminDashboard from "./modules/admin/AdminDashboard";
 // import ReceptionistDashboard from "./modules/receptionist/ReceptionistDashboard";
@@ -45,8 +46,11 @@ function App() {
         <Route path="/doctors" element={<OurDoctors />} />
 
         {/* Login */}
-        {/* <Route path="/login" element={<Login />} /> */}
-
+        <Route path="/login" element={
+          <div className="login-center-wrapper">
+            <LoginContainer />
+          </div>
+         } />
         {/* Protected Routes for modules */}
         {/* <Route
           path="/admin"
