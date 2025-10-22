@@ -16,9 +16,10 @@ import LoginContainer from "./components/Login/LoginContainer";
 // Module dashboards (protected)
 // import AdminDashboard from "./modules/admin/AdminDashboard";
 // import ReceptionistDashboard from "./modules/receptionist/ReceptionistDashboard";
-// import DoctorDashboard from "./modules/doctor/DoctorDashboard";
+// import DoctorDashboard from "./modules/doctor/Doctorashboard";
 // import LabDashboard from "./modules/labtechnician/LabDashboard";
 // import PharmacistDashboard from "./modules/pharmacist/PharmacistDashboard";
+import DoctorDashboard from "./Pages/Doctor/Doctor_dashboard";  
 
 // Auth
 // import Login from "./auth/Login";
@@ -67,16 +68,17 @@ function App() {
               <ReceptionistDashboard />
             </ProtectedRoute>
           }
-        />
+        /> */}
         <Route
-          path="/doctor"
+          path="/DoctorDashboard"
           element={
-            <ProtectedRoute allowedId={3}>
+            // <ProtectedRoute allowedId={3}>
               <DoctorDashboard />
-            </ProtectedRoute>
+            // {/* </ProtectedRoute> */}
           }
         />
-        <Route
+        
+        {/* <Route
           path="/lab"
           element={
             <ProtectedRoute allowedId={4}>
@@ -91,7 +93,7 @@ function App() {
               <PharmacistDashboard />
             </ProtectedRoute>
           }
-        />
+        /> */}
 
         {/* Catch all */}
         {/* <Route path="*" element={<Navigate to="/" />} /> */}
