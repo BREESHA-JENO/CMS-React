@@ -4,6 +4,7 @@ import "./Doctor.css"; // optional: for clean separation of styles
 
 // ============== DOCTOR DASHBOARD ==============
 const Doctor = ({ doctor }) => {
+  console.log("Doctor Component Rendered", doctor);
   const navigate = useNavigate();
 
   const handleAction = (action) => {
