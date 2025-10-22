@@ -7,14 +7,22 @@ import AboutUs from "./pages/website/AboutUs";
 import Contact from "./Pages/Website/Contact";
 import Departments from "./Pages/Website/Departments";
 import OurDoctors from "./Pages/Website/OurDoctor";
+import PublicLayout from "./Layout/PublicLayout";
+import DashboardLayout from "./Layout/DashboardLayout";
+import LeaveForm from "./Pages/Leave/LeaveForm";
+import LeaveList from "./Pages/Leave/LeaveList";
+import Profile from "./Pages/Profile/Profile";
+
 
 import './App.css';
+import AdminDashboard from "./Pages/Admin/Admin_dashboard";
 
-
-import Header from "./Elements/Header";
-import Footer from "./Elements/Footer";
 import LoginContainer from "./components/Login/LoginContainer";
+<<<<<<< HEAD
 import ReceptionDashboard from "./Pages/Receptionist/Receptionist_dashboard";
+=======
+import ProtectedRoute from "./Utils/ProtectedRoute";
+>>>>>>> a3030a074ef8c3115c6716586a0899ad5d351e60
 // Module dashboards (protected)
 // import AdminDashboard from "./modules/admin/AdminDashboard";
 // import ReceptionistDashboard from "./modules/receptionist/ReceptionistDashboard";
@@ -38,14 +46,14 @@ import ReceptionDashboard from "./Pages/Receptionist/Receptionist_dashboard";
 function App() {
   return (
     <BrowserRouter>
-      <Header />
+      {/* <Header /> */}
       <Routes>
         {/* Public Routes */}
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<AboutUs />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/departments" element={<Departments />} />
-        <Route path="/doctors" element={<OurDoctors />} />
+        <Route path="/" element={ <PublicLayout><Home /></PublicLayout>} />
+        <Route path="/about" element={<PublicLayout><AboutUs /></PublicLayout>} />
+        <Route path="/contact" element={<PublicLayout><Contact /></PublicLayout>} />
+        <Route path="/departments" element={<PublicLayout><Departments /></PublicLayout>} />
+        <Route path="/doctors" element={<PublicLayout><OurDoctors /></PublicLayout>} />
 
         {/* Login */}
         <Route path="/login" element={
@@ -53,16 +61,33 @@ function App() {
             <LoginContainer />
           </div>
          } />
+
         {/* Protected Routes for modules */}
+<<<<<<< HEAD
         {/* {/* <Route
+=======
+        <Route
+>>>>>>> a3030a074ef8c3115c6716586a0899ad5d351e60
           path="/admin"
           element={
             <ProtectedRoute allowedId={1}>
+              <DashboardLayout>
               <AdminDashboard />
+              </DashboardLayout>
             </ProtectedRoute>
           }
+<<<<<<< HEAD
         /> */}
         <Route
+=======
+        />
+        {/* Leave Management */}
+        <Route path="/leave-form" element={<DashboardLayout><LeaveForm /></DashboardLayout>} />
+        <Route path="/leave-list" element={<DashboardLayout><LeaveList /></DashboardLayout>} />
+        <Route path="/profile" element={<DashboardLayout><Profile /></DashboardLayout>} />
+
+        {/* <Route
+>>>>>>> a3030a074ef8c3115c6716586a0899ad5d351e60
           path="/receptionist"
           element={
             // <ProtectedRoute allowedId={2}>
@@ -94,12 +119,15 @@ function App() {
             </ProtectedRoute>
           }
         /> */}
+<<<<<<< HEAD
         
+=======
+>>>>>>> a3030a074ef8c3115c6716586a0899ad5d351e60
 
         {/* Catch all */}
         {/* <Route path="*" element={<Navigate to="/" />} /> */}
       </Routes>
-      <Footer />
+      {/* <Footer /> */}
     </BrowserRouter>
   );
 }

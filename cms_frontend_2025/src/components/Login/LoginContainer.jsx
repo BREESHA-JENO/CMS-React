@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LoginPage from "../../Pages/Login/LoginPage";
+import { loginUser, forgotPasswordRequest } from "../../Service/loginapi";
 
 function LoginContainer() {
   const [username, setUsername] = useState("");
@@ -8,15 +9,12 @@ function LoginContainer() {
   const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
-
   const [showForgot, setShowForgot] = useState(false);
   const [fpEmail, setFpEmail] = useState("");
   const [fpMessage, setFpMessage] = useState("");
-
   const navigate = useNavigate();
 
-  // Handle login
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setUsernameError("");
     setPasswordError("");
@@ -26,59 +24,54 @@ function LoginContainer() {
       setUsernameError("Please enter username");
       return;
     }
-
     if (!password.trim()) {
       setPasswordError("Please enter password");
       return;
     }
 
-    const storedUser = localStorage.getItem("staff_" + username);
-    if (!storedUser) {
-      setUsernameError("User not found");
-      return;
-    }
+    try {
+      const response = await loginUser(username, password);
+      const data = response.data;
+      setSuccessMsg("Login successful!");
 
-    const parsed = JSON.parse(storedUser);
-    if (parsed.password !== password) {
-      setPasswordError("Incorrect password");
-      return;
-    }
+      localStorage.setItem("accessToken", data.access);
+      localStorage.setItem("refreshToken", data.refresh);
+      localStorage.setItem("user", JSON.stringify(data.user));
 
-    localStorage.setItem("loggedInUser", JSON.stringify(parsed));
-    setSuccessMsg("Login successful!");
-    setTimeout(() => {
-      if (parsed.role === "Admin") navigate("/admin");
-      else if (parsed.role === "Doctor") navigate("/doctor");
-      else navigate("/");
-    }, 1000);
+      setTimeout(() => {
+        const role = data.user.role;
+        if (role === "ADMIN") navigate("/admin");
+        else if (role === "DOC") navigate("/doctor");
+        else if (role === "REC") navigate("/receptionist");
+        else if (role === "LAB") navigate("/lab");
+        else if (role === "PHARM") navigate("/pharmacist");
+        else if (role === "AMB") navigate("/ambulance");
+        else navigate("/");
+      }, 1000);
+    } catch (error) {
+      if (error.response) {
+        const msg = error.response.data.error || "Login failed";
+        if (msg.toLowerCase().includes("username")) setUsernameError(msg);
+        else setPasswordError(msg);
+      } else {
+        setPasswordError("Network error");
+      }
+    }
   };
 
-  // Handle forgot password
-  const handleForgotPassword = (e) => {
+  const handleForgotPassword = async (e) => {
     e.preventDefault();
-
     if (!fpEmail.trim()) {
       setFpMessage("Please enter your email.");
       return;
     }
 
-    const staff = localStorage.getItem("staff_" + fpEmail);
-    if (!staff) {
-      setFpMessage("Email not found.");
-      return;
+    try {
+      const res = await forgotPasswordRequest(fpEmail);
+      setFpMessage(res.data.message || "Request sent to admin.");
+    } catch {
+      setFpMessage("Error sending request.");
     }
-
-    const requestKey = "request_" + fpEmail;
-    const date = new Date().toLocaleString();
-    const request = {
-      email: fpEmail,
-      type: "ForgotPassword",
-      date,
-      status: "pending",
-    };
-
-    localStorage.setItem(requestKey, JSON.stringify(request));
-    setFpMessage("Request sent to admin.");
   };
 
   return (

@@ -1,0 +1,15 @@
+/* src/Layout/DashboardLayout.css or your global CSS */
+.dashboard-root {
+  min-height: 100vh;
+  background: #f9fbfd;
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-main {
+  flex: 1;
+  padding: 1.6rem 2.2rem 2.6rem 2.2rem; /* Adjust as needed */
+  margin-bottom: 56px; /* Leaves space for fixed footer if using Footer1 fixed */
+}
+
+/* If your footer is fixed, make sure to leave space at the bottom for main content. */
