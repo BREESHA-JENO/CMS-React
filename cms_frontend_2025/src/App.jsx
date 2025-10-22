@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
+
 // Website pages (public)
 import Home from "./Pages/Website/Home";
 import AboutUs from "./pages/website/AboutUs";
@@ -13,6 +14,7 @@ import './App.css';
 import Header from "./Elements/Header";
 import Footer from "./Elements/Footer";
 import LoginContainer from "./components/Login/LoginContainer";
+import ReceptionDashboard from "./Pages/Receptionist/Receptionist_dashboard";
 // Module dashboards (protected)
 // import AdminDashboard from "./modules/admin/AdminDashboard";
 // import ReceptionistDashboard from "./modules/receptionist/ReceptionistDashboard";
@@ -52,46 +54,47 @@ function App() {
           </div>
          } />
         {/* Protected Routes for modules */}
-        {/* <Route
+        {/* {/* <Route
           path="/admin"
           element={
             <ProtectedRoute allowedId={1}>
               <AdminDashboard />
             </ProtectedRoute>
           }
-        />
+        /> */}
         <Route
           path="/receptionist"
           element={
-            <ProtectedRoute allowedId={2}>
-              <ReceptionistDashboard />
-            </ProtectedRoute>
+            // <ProtectedRoute allowedId={2}>
+              <ReceptionDashboard />
+            // </ProtectedRoute>
           }
         />
-        <Route
+        {/* <Route
           path="/doctor"
           element={
             <ProtectedRoute allowedId={3}>
               <DoctorDashboard />
             </ProtectedRoute>
           }
-        />
-        <Route
+        /> */}
+        {/* <Route
           path="/lab"
           element={
             <ProtectedRoute allowedId={4}>
               <LabDashboard />
             </ProtectedRoute>
           }
-        />
-        <Route
+        /> */}
+        {/* <Route
           path="/pharmacist"
           element={
             <ProtectedRoute allowedId={5}>
               <PharmacistDashboard />
             </ProtectedRoute>
           }
-        />
+        /> */}
+        
 
         {/* Catch all */}
         {/* <Route path="*" element={<Navigate to="/" />} /> */}

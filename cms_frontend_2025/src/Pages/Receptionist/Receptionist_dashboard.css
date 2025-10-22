@@ -1,0 +1,76 @@
+.receptionist-dashboard-container {
+  max-width: 600px;
+  margin: 50px auto;
+  padding: 30px;
+  font-family: Arial, sans-serif;
+}
+
+.dashboard-summary-section {
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.summary-dropdown-btn {
+  background-color: #0066cc;
+  color: #fff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.summary-dropdown-btn:hover {
+  background-color: #004080;
+}
+
+.dashboard-summary-content {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-top: 12px;
+  padding: 16px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 1rem;
+  color: #333;
+}
+
+.summary-item:last-child {
+  border-bottom: none;
+}
+
+.summary-item strong {
+  color: #0066cc;
+  font-weight: bold;
+}
+
+.patient-actions-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.action-btn {
+  background: #0066cc;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 40px 20px;
+  font-size: 1.3rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.action-btn:hover {
+  background: #004080;
+}
