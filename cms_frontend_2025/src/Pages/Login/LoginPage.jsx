@@ -16,65 +16,141 @@ function LoginPage({
   setFpEmail,
   fpMessage,
   handleForgotPassword,
+  isLoading, // Optional: Add loading prop for professional feel
 }) {
   return (
-    <div className="login-container">
-      <h2>Login to HealthIs</h2>
+    <div className="login-center-wrapper">
+      <div className="login-container">
+        {/* Optional Logo Placeholder - Replace with actual logo if available */}
+        <div className="login-logo-placeholder">
+          <span className="logo-text">HealthIs</span>
+        </div>
 
-      {!showForgot ? (
-        <form onSubmit={handleLogin}>
-          <span id="success" style={{ color: "#0a775f" }}>
-            {successMsg}
-          </span>
+        <h2>Login to Your Account</h2>
 
-          <label htmlFor="username">Username:</label>
-          <input
-            type="email"
-            id="username"
-            value={username}
-            placeholder="Enter Username"
-            onChange={(e) => setUsername(e.target.value)}
-          />
-          <span style={{ color: "red" }}>{usernameError}</span>
+        {!showForgot ? (
+          <form onSubmit={handleLogin} className="login-form" noValidate>
+            {successMsg && (
+              <div className="success-message" role="alert" aria-live="polite">
+                {successMsg}
+              </div>
+            )}
 
-          <label htmlFor="password">Password:</label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            placeholder="Enter Your Password"
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <span style={{ color: "red" }}>{passwordError}</span>
+            <div className="form-group">
+              <label htmlFor="username" className="sr-only">
+                Username or Email
+              </label>
+              <div className="input-wrapper">
+                <input
+                  type="email"
+                  id="username"
+                  value={username}
+                  placeholder="Username or Email"
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                  aria-describedby={usernameError ? "username-error" : undefined}
+                  disabled={isLoading}
+                />
+                {usernameError && (
+                  <span id="username-error" className="error-message" role="alert">
+                    {usernameError}
+                  </span>
+                )}
+              </div>
+            </div>
 
-          <button type="submit">Login</button>
-        </form>
-      ) : (
-        <section id="forgot-password-form">
-          <h3>Forgot Password</h3>
-          <form onSubmit={handleForgotPassword}>
-            <label htmlFor="fpEmail">Enter your registered email:</label>
-            <input
-              type="email"
-              id="fpEmail"
-              value={fpEmail}
-              onChange={(e) => setFpEmail(e.target.value)}
-              required
-            />
-            <button type="submit">Request Password Reset</button>
-            <button type="button" onClick={() => setShowForgot(false)}>
-              Back to Login
+            <div className="form-group">
+              <label htmlFor="password" className="sr-only">
+                Password
+              </label>
+              <div className="input-wrapper">
+                <input
+                  type="password"
+                  id="password"
+                  value={password}
+                  placeholder="Password"
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  aria-describedby={passwordError ? "password-error" : undefined}
+                  disabled={isLoading}
+                />
+                {passwordError && (
+                  <span id="password-error" className="error-message" role="alert">
+                    {passwordError}
+                  </span>
+                )}
+              </div>
+            </div>
+
+            <button type="submit" className="submit-button" disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <span className="spinner"></span>
+                  Signing In...
+                </>
+              ) : (
+                "Sign In"
+              )}
             </button>
-            <p id="fpMessage">{fpMessage}</p>
           </form>
-        </section>
-      )}
+        ) : (
+          <section className="forgot-password-section">
+            <h3>Forgot Your Password?</h3>
+            <p className="forgot-subtitle">
+              Enter your registered email to receive a reset link.
+            </p>
+            <form onSubmit={handleForgotPassword} className="forgot-form" noValidate>
+              <div className="form-group">
+                <label htmlFor="fpEmail">Email Address</label>
+                <input
+                  type="email"
+                  id="fpEmail"
+                  value={fpEmail}
+                  placeholder="Enter your email"
+                  onChange={(e) => setFpEmail(e.target.value)}
+                  required
+                  disabled={isLoading}
+                />
+              </div>
+              <button type="submit" className="submit-button" disabled={isLoading}>
+                {isLoading ? (
+                  <>
+                    <span className="spinner"></span>
+                    Sending...
+                  </>
+                ) : (
+                  "Request Reset Link"
+                )}
+              </button>
+              <button
+                type="button"
+                className="back-button"
+                onClick={() => setShowForgot(false)}
+                disabled={isLoading}
+              >
+                Back to Sign In
+              </button>
+              {fpMessage && (
+                <p className="fp-message" role="alert">
+                  {fpMessage}
+                </p>
+              )}
+            </form>
+          </section>
+        )}
 
-      {!showForgot && (
-        <a href="#" className="forgot-password" onClick={() => setShowForgot(true)}>
-          Forgot Password?
-        </a>
-      )}
+        {!showForgot && (
+          <div className="forgot-link-wrapper">
+            <button
+              type="button"
+              className="forgot-password-link"
+              onClick={() => setShowForgot(true)}
+            >
+              Forgot Password?
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

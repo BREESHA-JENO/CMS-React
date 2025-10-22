@@ -6,13 +6,18 @@ import AboutUs from "./pages/website/AboutUs";
 import Contact from "./Pages/Website/Contact";
 import Departments from "./Pages/Website/Departments";
 import OurDoctors from "./Pages/Website/OurDoctor";
+import PublicLayout from "./Layout/PublicLayout";
+import DashboardLayout from "./Layout/DashboardLayout";
+import LeaveForm from "./Pages/Leave/LeaveForm";
+import LeaveList from "./Pages/Leave/LeaveList";
+import Profile from "./Pages/Profile/Profile";
+
 
 import './App.css';
+import AdminDashboard from "./Pages/Admin/Admin_dashboard";
 
-
-import Header from "./Elements/Header";
-import Footer from "./Elements/Footer";
 import LoginContainer from "./components/Login/LoginContainer";
+import ProtectedRoute from "./Utils/ProtectedRoute";
 // Module dashboards (protected)
 // import AdminDashboard from "./modules/admin/AdminDashboard";
 // import ReceptionistDashboard from "./modules/receptionist/ReceptionistDashboard";
@@ -36,14 +41,14 @@ import LoginContainer from "./components/Login/LoginContainer";
 function App() {
   return (
     <BrowserRouter>
-      <Header />
+      {/* <Header /> */}
       <Routes>
         {/* Public Routes */}
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<AboutUs />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/departments" element={<Departments />} />
-        <Route path="/doctors" element={<OurDoctors />} />
+        <Route path="/" element={ <PublicLayout><Home /></PublicLayout>} />
+        <Route path="/about" element={<PublicLayout><AboutUs /></PublicLayout>} />
+        <Route path="/contact" element={<PublicLayout><Contact /></PublicLayout>} />
+        <Route path="/departments" element={<PublicLayout><Departments /></PublicLayout>} />
+        <Route path="/doctors" element={<PublicLayout><OurDoctors /></PublicLayout>} />
 
         {/* Login */}
         <Route path="/login" element={
@@ -51,16 +56,24 @@ function App() {
             <LoginContainer />
           </div>
          } />
+
         {/* Protected Routes for modules */}
-        {/* <Route
+        <Route
           path="/admin"
           element={
             <ProtectedRoute allowedId={1}>
+              <DashboardLayout>
               <AdminDashboard />
+              </DashboardLayout>
             </ProtectedRoute>
           }
         />
-        <Route
+        {/* Leave Management */}
+        <Route path="/leave-form" element={<DashboardLayout><LeaveForm /></DashboardLayout>} />
+        <Route path="/leave-list" element={<DashboardLayout><LeaveList /></DashboardLayout>} />
+        <Route path="/profile" element={<DashboardLayout><Profile /></DashboardLayout>} />
+
+        {/* <Route
           path="/receptionist"
           element={
             <ProtectedRoute allowedId={2}>
@@ -91,12 +104,12 @@ function App() {
               <PharmacistDashboard />
             </ProtectedRoute>
           }
-        />
+        /> */}
 
         {/* Catch all */}
         {/* <Route path="*" element={<Navigate to="/" />} /> */}
       </Routes>
-      <Footer />
+      {/* <Footer /> */}
     </BrowserRouter>
   );
 }

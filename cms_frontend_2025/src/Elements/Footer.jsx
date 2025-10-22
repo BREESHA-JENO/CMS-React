@@ -8,7 +8,7 @@ const Footer = () => {
       <div className="mb-4">
         <img
           src={logo}
-          alt="ClinicCare+ Logo"
+          alt="HealthIs Logo"
           className="logo mx-auto"
           style={{ width: "80px", height: "auto" }}
           onError={(e) => {

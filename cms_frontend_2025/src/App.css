@@ -19,8 +19,9 @@ section,
 div[class$='container'] {
   width: 100%;
   margin: 0;
-  padding-left: 60px;
-  padding-right: 60px;
+  padding-top: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
   box-sizing: border-box;
 }
 
@@ -258,6 +259,14 @@ button {
 button:hover {
   background-color: #002060;
 }
+
+.dashboard-container.dark,
+.dashboard-content.dark,
+body.dark-mode {
+  background-color: #161b20;
+  color: #fff;
+}
+
 
 /* Doctors section */
 .department {
