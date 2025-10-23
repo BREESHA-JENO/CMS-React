@@ -18,8 +18,8 @@ function Sidebar({ open, role, onClose }) {
   } else if (role === "REC") {
     links = [
       { path: "/receptionist", label: "Receptionist Dashboard" },
-      { path: "/patients", label: "Patient List" },
-      { path: "/appointments", label: "Appointments" }
+      { path: "/patient-list", label: "Patient List" },
+      { path: "/manage-appointments", label: "Appointments" }
     ];
   }
   // add more roles as needed...

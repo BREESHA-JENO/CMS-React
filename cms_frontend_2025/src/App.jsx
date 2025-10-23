@@ -16,19 +16,31 @@ import Profile from "./Pages/Profile/Profile";
 
 import './App.css';
 import AdminDashboard from "./Pages/Admin/Admin_dashboard";
-
 import LoginContainer from "./components/Login/LoginContainer";
-<<<<<<< HEAD
-import ReceptionDashboard from "./Pages/Receptionist/Receptionist_dashboard";
-=======
 import ProtectedRoute from "./Utils/ProtectedRoute";
->>>>>>> a3030a074ef8c3115c6716586a0899ad5d351e60
 // Module dashboards (protected)
 // import AdminDashboard from "./modules/admin/AdminDashboard";
 // import ReceptionistDashboard from "./modules/receptionist/ReceptionistDashboard";
 // import DoctorDashboard from "./modules/doctor/DoctorDashboard";
 // import LabDashboard from "./modules/labtechnician/LabDashboard";
 // import PharmacistDashboard from "./modules/pharmacist/PharmacistDashboard";
+
+// Add these imports to your existing App.jsx
+import ReceptionistDashboard from "./Pages/Receptionist/Receptionist_dashboard";
+import ManagePatients from "./Pages/Receptionist/ManagePatients";
+import AddPatient from "./components/Receptionist/AddPatients";
+import PatientList from "./components/Receptionist/PatientList";
+import PatientSearch from "./components/Receptionist/PatientSearch";
+import EditPatient from "./components/Receptionist/EditPatient";
+import DeletePatient from "./components/Receptionist/DeletePatient";
+import SelectPatientEdit from './components/Receptionist/SelectPatientEdit';
+import ManageAppointments from './Pages/Receptionist/ManageAppointments';
+import AddAppointment from './components/Receptionist/AddAppointments';
+import AppointmentList from './components/Receptionist/AppointmentList';
+import AppointmentSearch from './components/Receptionist/AppointmentSearch';
+import EditAppointment from './components/Receptionist/EditAppointments';
+
+
 
 // Auth
 // import Login from "./auth/Login";
@@ -63,11 +75,7 @@ function App() {
          } />
 
         {/* Protected Routes for modules */}
-<<<<<<< HEAD
-        {/* {/* <Route
-=======
         <Route
->>>>>>> a3030a074ef8c3115c6716586a0899ad5d351e60
           path="/admin"
           element={
             <ProtectedRoute allowedId={1}>
@@ -76,25 +84,123 @@ function App() {
               </DashboardLayout>
             </ProtectedRoute>
           }
-<<<<<<< HEAD
-        /> */}
-        <Route
-=======
         />
         {/* Leave Management */}
         <Route path="/leave-form" element={<DashboardLayout><LeaveForm /></DashboardLayout>} />
         <Route path="/leave-list" element={<DashboardLayout><LeaveList /></DashboardLayout>} />
         <Route path="/profile" element={<DashboardLayout><Profile /></DashboardLayout>} />
 
-        {/* <Route
->>>>>>> a3030a074ef8c3115c6716586a0899ad5d351e60
+         <Route
           path="/receptionist"
           element={
-            // <ProtectedRoute allowedId={2}>
-              <ReceptionDashboard />
-            // </ProtectedRoute>
+            <ProtectedRoute role="REC">
+              <ReceptionistDashboard/>
+            </ProtectedRoute>
           }
         />
+        <Route 
+            path="/manage-patients" 
+            element={
+              <ProtectedRoute role="REC">
+                <ManagePatients />
+              </ProtectedRoute>
+            } 
+        />
+
+        <Route 
+          path="/add-patient" 
+          element={
+            <ProtectedRoute role="REC">
+              <AddPatient />
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="/patient-list" 
+          element={
+            <ProtectedRoute role="REC">
+              <PatientList />
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="/patient-search" 
+          element={
+            <ProtectedRoute role="REC">
+              <PatientSearch />
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="/edit-patient/:id" 
+          element={
+            <ProtectedRoute role="REC">
+              <EditPatient />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/edit-patient" 
+          element={
+            <ProtectedRoute role="REC">
+              <SelectPatientEdit />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/delete-patient" 
+          element={
+            <ProtectedRoute role="REC">
+              <DeletePatient />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/manage-appointments" 
+          element={
+            <ProtectedRoute role="REC">
+              <ManageAppointments />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/add-appointment" 
+          element={
+            <ProtectedRoute role="REC">
+              <AddAppointment />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/appointment-list" 
+          element={
+            <ProtectedRoute role="REC">
+              <AppointmentList />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/appointment-search" 
+          element={
+            <ProtectedRoute role="REC">
+              <AppointmentSearch />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/edit-appointment/:id" 
+          element={
+            <ProtectedRoute role="REC">
+              <EditAppointment />
+            </ProtectedRoute>
+          } 
+        />
+
+
+
         {/* <Route
           path="/doctor"
           element={
@@ -119,10 +225,6 @@ function App() {
             </ProtectedRoute>
           }
         /> */}
-<<<<<<< HEAD
-        
-=======
->>>>>>> a3030a074ef8c3115c6716586a0899ad5d351e60
 
         {/* Catch all */}
         {/* <Route path="*" element={<Navigate to="/" />} /> */}
