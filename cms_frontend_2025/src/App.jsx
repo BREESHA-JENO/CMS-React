@@ -25,7 +25,7 @@ import StaffSearch from "./components/Admin/StaffSearch";
 import ChangePassword from "./Pages/Profile/ChangePassword";
 import ForgotPasswordRequests from "./components/Login/ForgotPasswordRequests";
 import "./App.css";
-
+console.log("hello");
 function App() {
   const [darkMode, setDarkMode] = useState(
     () => localStorage.getItem("darkMode") === "true"
