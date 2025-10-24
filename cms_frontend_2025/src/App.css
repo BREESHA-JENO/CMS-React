@@ -25,6 +25,18 @@ div[class$='container'] {
   box-sizing: border-box;
 }
 
+body.dark-mode {
+  background: #161b20 !important;
+  color: #fff !important;
+}
+.dashboard-main.dark,
+.admindash-main.dark,
+.staffdash-main.dark {
+  background: #161b20 !important;
+  color: #fff !important;
+}
+/* Add other similar global dark mode overrides as needed */
+
 
 /* Global styles */
 body {
@@ -320,7 +332,7 @@ body.dark-mode {
 
 /* Footer */
 footer {
-  background-color: #003087 !important;
+  background-color: #003087;
   color: #fff;
   text-align: center;
   padding: 1rem;

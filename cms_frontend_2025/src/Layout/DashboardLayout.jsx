@@ -3,24 +3,16 @@ import Header1 from "../Elements/Header1";
 import Footer1 from "../Elements/Footer1";
 import Sidebar from "../Elements/Sidebar";
 
-function DashboardLayout({ children }) {
+function DashboardLayout({ children, darkMode, setDarkMode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
 
-  // Example notifications array, ready to hook up with API/fetch: 
-  const [notifications, setNotifications] = useState([
-    { id: 1, text: "New leave request approved" },
-    { id: 2, text: "Password changed successfully" }
-  ]);
+  const [notifications, setNotifications] = useState([]);
 
-  // Get current user and role (update as needed for context/auth)
   const user = JSON.parse(localStorage.getItem("user"));
   const role = user?.role;
-
   const handleSidebarToggle = () => setSidebarOpen(prev => !prev);
 
   useEffect(() => {
-    // Toggle body/global class for theme
     if (darkMode) {
       document.body.classList.add("dark-mode");
     } else {
