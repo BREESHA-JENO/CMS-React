@@ -25,13 +25,6 @@ import StaffSearch from "./components/Admin/StaffSearch";
 import ChangePassword from "./Pages/Profile/ChangePassword";
 import ForgotPasswordRequests from "./components/Login/ForgotPasswordRequests";
 import "./App.css";
-console.log("hello");
-// Module dashboards (protected)
-// import AdminDashboard from "./modules/admin/AdminDashboard";
-// import ReceptionistDashboard from "./modules/receptionist/ReceptionistDashboard";
-// import DoctorDashboard from "./modules/doctor/DoctorDashboard";
-// import LabDashboard from "./modules/labtechnician/LabDashboard";
-// import PharmacistDashboard from "./modules/pharmacist/PharmacistDashboard";
 
 // Add these imports to your existing App.jsx
 import ReceptionistDashboard from "./Pages/Receptionist/Receptionist_dashboard";
@@ -47,21 +40,6 @@ import AddAppointment from './components/Receptionist/AddAppointments';
 import AppointmentList from './components/Receptionist/AppointmentList';
 import AppointmentSearch from './components/Receptionist/AppointmentSearch';
 import EditAppointment from './components/Receptionist/EditAppointments';
-
-
-
-// Auth
-// import Login from "./auth/Login";
-
-// ProtectedRoute Component
-// const ProtectedRoute = ({ children, allowedId }) => {
-//   const user = JSON.parse(localStorage.getItem("user")); // e.g., { id: 1, name: "Admin" }
-
-//   if (!user) return <Navigate to="/login" replace />; // Not logged in
-//   if (allowedId && user.id !== allowedId) return <Navigate to="/login" replace />; // ID mismatch
-
-//   return children;
-// };
 
 function App() {
   const [darkMode, setDarkMode] = useState(
@@ -155,6 +133,47 @@ function App() {
         <Route
           path="/admin/specializations/add"
           element={
+            <ProtectedRoute allowedRoles={["ADMIN"]}>
+              <DashboardLayout darkMode={darkMode} setDarkMode={setDarkMode}>
+                <SpecializationForm darkMode={darkMode} />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/specializations/edit/:id"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN"]}>
+              <DashboardLayout darkMode={darkMode} setDarkMode={setDarkMode}>
+                <SpecializationForm darkMode={darkMode} />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/specializations"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN"]}>
+              <DashboardLayout darkMode={darkMode} setDarkMode={setDarkMode}>
+                <SpecializationTable darkMode={darkMode} />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/specializations/search"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN"]}>
+              <DashboardLayout darkMode={darkMode} setDarkMode={setDarkMode}>
+                <SpecializationSearch />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+        {/* DASHBOARD/RECEPTIONIST ROUTES */}
+        <Route
+          path="/receptionist"
+          element={
             <ProtectedRoute role="REC">
               <ReceptionistDashboard/>
             </ProtectedRoute>
@@ -168,7 +187,6 @@ function App() {
               </ProtectedRoute>
             } 
         />
-
         <Route 
           path="/add-patient" 
           element={
@@ -177,7 +195,6 @@ function App() {
             </ProtectedRoute>
           } 
         />
-
         <Route 
           path="/patient-list" 
           element={
@@ -195,7 +212,6 @@ function App() {
             </ProtectedRoute>
           } 
         />
-
         <Route 
           path="/edit-patient/:id" 
           element={
@@ -259,39 +275,6 @@ function App() {
               <EditAppointment />
             </ProtectedRoute>
           } 
-        />
-
-
-
-        {/* <Route
-          path="/admin/specializations/edit/:id"
-          element={
-            <ProtectedRoute allowedRoles={["ADMIN"]}>
-              <DashboardLayout darkMode={darkMode} setDarkMode={setDarkMode}>
-                <SpecializationForm darkMode={darkMode} />
-              </DashboardLayout>
-            </ProtectedRoute>
-          }
-        /> */}
-        {/* <Route
-          path="/admin/specializations"
-          element={
-            <ProtectedRoute allowedRoles={["ADMIN"]}>
-              <DashboardLayout darkMode={darkMode} setDarkMode={setDarkMode}>
-                <SpecializationTable darkMode={darkMode} />
-              </DashboardLayout>
-            </ProtectedRoute>
-          }
-        /> */}
-        {/* <Route
-          path="/admin/specializations/search"
-          element={
-            <ProtectedRoute allowedRoles={["ADMIN"]}>
-              <DashboardLayout darkMode={darkMode} setDarkMode={setDarkMode}>
-                <SpecializationSearch />
-              </DashboardLayout>
-            </ProtectedRoute>
-          }
         />
         <Route
           path="/leave-form"

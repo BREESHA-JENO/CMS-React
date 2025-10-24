@@ -15,7 +15,7 @@ export const getLeaveRequests = () => api.get("/admin/leave-requests/");
 export const createLeaveRequest = (data) => api.post("/admin/leave-requests/", data);
 export const updateLeaveRequestStatus = (id, data) => api.patch(`/admin/leave-requests/${id}/`, data);
 
-export const changePassword = (data) => api.post("/api/change-password/", data);
+export const changePassword = (data) => api.post("/api/admin/change-password/", data);
 
 // SPECIALIZATIONS
 export const getSpecializations = () => api.get("/api/admin/specializations/");
