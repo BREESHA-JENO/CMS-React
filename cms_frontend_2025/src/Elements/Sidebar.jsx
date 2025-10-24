@@ -13,13 +13,20 @@ function Sidebar({ open, role, onClose }) {
       { path: "/admin/staff-form/:id?", label: "Add Staff" },
       { path: "/admin/staff-list", label: "Staff List" },
       { path: "/leave-list", label: "Leave Requests" },
+      { path: "/admin/ambulance", label: "Ambulance Management" }, 
       { path: "/settings", label: "Settings" }
     ];
   } else if (role === "REC") {
     links = [
       { path: "/receptionist", label: "Receptionist Dashboard" },
       { path: "/patient-list", label: "Patient List" },
-      { path: "/manage-appointments", label: "Appointments" }
+      { path: "/manage-appointments", label: "Appointments" },
+      { path: "/receptionist/ambulance", label: "Ambulance Requests" }
+    ];
+  } else if (role === "AMB") {
+    links = [
+      { path: "/ambulance", label: "Ambulance Dashboard" },
+      { path: "/profile", label: "Profile" },
     ];
   }
   // add more roles as needed...

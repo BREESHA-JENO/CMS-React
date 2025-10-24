@@ -24,6 +24,9 @@ import SpecializationSearch from "./components/Admin/SpecializationSearch";
 import StaffSearch from "./components/Admin/StaffSearch";
 import ChangePassword from "./Pages/Profile/ChangePassword";
 import ForgotPasswordRequests from "./components/Login/ForgotPasswordRequests";
+import DriverAmbulanceDashboard from "./Pages/Ambulance/DriverAmbulanceDashboard";
+import AdminAmbulanceDashboard from "./Pages/Admin/AdminAmbulanceDashboard";
+import ReceptionistAmbulanceDashboard from "./Pages/Receptionist/ReceptionistAmbulanceDashboard";
 import "./App.css";
 
 // Add these imports to your existing App.jsx
@@ -276,6 +279,35 @@ function App() {
             </ProtectedRoute>
           } 
         />
+        <Route
+          path="/ambulance"
+          element={
+            <ProtectedRoute allowedRoles={["AMB"]}>
+              <DriverAmbulanceDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/ambulance"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN"]}>
+              <DashboardLayout darkMode={darkMode} setDarkMode={setDarkMode}>
+                <AdminAmbulanceDashboard />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/receptionist/ambulance"
+          element={
+            <ProtectedRoute allowedRoles={["REC"]}>
+              <DashboardLayout darkMode={darkMode} setDarkMode={setDarkMode}>
+                <ReceptionistAmbulanceDashboard />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+
         <Route
           path="/leave-form"
           element={
