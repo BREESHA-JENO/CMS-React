@@ -1,8 +1,9 @@
+
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 // Website pages (public)
 import Home from "./Pages/Website/Home";
-import AboutUs from "./pages/website/AboutUs";
+import AboutUs from "./Pages/Website/AboutUs";
 import Contact from "./Pages/Website/Contact";
 import Departments from "./Pages/Website/Departments";
 import OurDoctors from "./Pages/Website/OurDoctor";
@@ -21,9 +22,10 @@ import ProtectedRoute from "./Utils/ProtectedRoute";
 // Module dashboards (protected)
 // import AdminDashboard from "./modules/admin/AdminDashboard";
 // import ReceptionistDashboard from "./modules/receptionist/ReceptionistDashboard";
-// import DoctorDashboard from "./modules/doctor/DoctorDashboard";
+// import DoctorDashboard from "./modules/doctor/Doctorashboard";
 // import LabDashboard from "./modules/labtechnician/LabDashboard";
 // import PharmacistDashboard from "./modules/pharmacist/PharmacistDashboard";
+import DoctorDashboard from "./Pages/Doctor/Doctor_dashboard";
 
 // Auth
 // import Login from "./auth/Login";
@@ -80,16 +82,17 @@ function App() {
               <ReceptionistDashboard />
             </ProtectedRoute>
           }
-        />
+        /> */}
         <Route
-          path="/doctor"
+          path="/DoctorDashboard"
           element={
-            <ProtectedRoute allowedId={3}>
+            // <ProtectedRoute allowedId={3}>
               <DoctorDashboard />
-            </ProtectedRoute>
+            // </ProtectedRoute>
           }
         />
-        <Route
+        
+        {/* <Route
           path="/lab"
           element={
             <ProtectedRoute allowedId={4}>
