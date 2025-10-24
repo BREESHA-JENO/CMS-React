@@ -26,6 +26,43 @@ import ChangePassword from "./Pages/Profile/ChangePassword";
 import ForgotPasswordRequests from "./components/Login/ForgotPasswordRequests";
 import "./App.css";
 console.log("hello");
+// Module dashboards (protected)
+// import AdminDashboard from "./modules/admin/AdminDashboard";
+// import ReceptionistDashboard from "./modules/receptionist/ReceptionistDashboard";
+// import DoctorDashboard from "./modules/doctor/DoctorDashboard";
+// import LabDashboard from "./modules/labtechnician/LabDashboard";
+// import PharmacistDashboard from "./modules/pharmacist/PharmacistDashboard";
+
+// Add these imports to your existing App.jsx
+import ReceptionistDashboard from "./Pages/Receptionist/Receptionist_dashboard";
+import ManagePatients from "./Pages/Receptionist/ManagePatients";
+import AddPatient from "./components/Receptionist/AddPatients";
+import PatientList from "./components/Receptionist/PatientList";
+import PatientSearch from "./components/Receptionist/PatientSearch";
+import EditPatient from "./components/Receptionist/EditPatient";
+import DeletePatient from "./components/Receptionist/DeletePatient";
+import SelectPatientEdit from './components/Receptionist/SelectPatientEdit';
+import ManageAppointments from './Pages/Receptionist/ManageAppointments';
+import AddAppointment from './components/Receptionist/AddAppointments';
+import AppointmentList from './components/Receptionist/AppointmentList';
+import AppointmentSearch from './components/Receptionist/AppointmentSearch';
+import EditAppointment from './components/Receptionist/EditAppointments';
+
+
+
+// Auth
+// import Login from "./auth/Login";
+
+// ProtectedRoute Component
+// const ProtectedRoute = ({ children, allowedId }) => {
+//   const user = JSON.parse(localStorage.getItem("user")); // e.g., { id: 1, name: "Admin" }
+
+//   if (!user) return <Navigate to="/login" replace />; // Not logged in
+//   if (allowedId && user.id !== allowedId) return <Navigate to="/login" replace />; // ID mismatch
+
+//   return children;
+// };
+
 function App() {
   const [darkMode, setDarkMode] = useState(
     () => localStorage.getItem("darkMode") === "true"
@@ -118,14 +155,115 @@ function App() {
         <Route
           path="/admin/specializations/add"
           element={
-            <ProtectedRoute allowedRoles={["ADMIN"]}>
-              <DashboardLayout darkMode={darkMode} setDarkMode={setDarkMode}>
-                <SpecializationForm darkMode={darkMode} />
-              </DashboardLayout>
+            <ProtectedRoute role="REC">
+              <ReceptionistDashboard/>
             </ProtectedRoute>
           }
         />
-        <Route
+        <Route 
+            path="/manage-patients" 
+            element={
+              <ProtectedRoute role="REC">
+                <ManagePatients />
+              </ProtectedRoute>
+            } 
+        />
+
+        <Route 
+          path="/add-patient" 
+          element={
+            <ProtectedRoute role="REC">
+              <AddPatient />
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="/patient-list" 
+          element={
+            <ProtectedRoute role="REC">
+              <PatientList />
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="/patient-search" 
+          element={
+            <ProtectedRoute role="REC">
+              <PatientSearch />
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="/edit-patient/:id" 
+          element={
+            <ProtectedRoute role="REC">
+              <EditPatient />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/edit-patient" 
+          element={
+            <ProtectedRoute role="REC">
+              <SelectPatientEdit />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/delete-patient" 
+          element={
+            <ProtectedRoute role="REC">
+              <DeletePatient />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/manage-appointments" 
+          element={
+            <ProtectedRoute role="REC">
+              <ManageAppointments />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/add-appointment" 
+          element={
+            <ProtectedRoute role="REC">
+              <AddAppointment />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/appointment-list" 
+          element={
+            <ProtectedRoute role="REC">
+              <AppointmentList />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/appointment-search" 
+          element={
+            <ProtectedRoute role="REC">
+              <AppointmentSearch />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/edit-appointment/:id" 
+          element={
+            <ProtectedRoute role="REC">
+              <EditAppointment />
+            </ProtectedRoute>
+          } 
+        />
+
+
+
+        {/* <Route
           path="/admin/specializations/edit/:id"
           element={
             <ProtectedRoute allowedRoles={["ADMIN"]}>
@@ -134,8 +272,8 @@ function App() {
               </DashboardLayout>
             </ProtectedRoute>
           }
-        />
-        <Route
+        /> */}
+        {/* <Route
           path="/admin/specializations"
           element={
             <ProtectedRoute allowedRoles={["ADMIN"]}>
@@ -144,8 +282,8 @@ function App() {
               </DashboardLayout>
             </ProtectedRoute>
           }
-        />
-        <Route
+        /> */}
+        {/* <Route
           path="/admin/specializations/search"
           element={
             <ProtectedRoute allowedRoles={["ADMIN"]}>
