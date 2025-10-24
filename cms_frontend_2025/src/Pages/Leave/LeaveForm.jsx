@@ -22,9 +22,37 @@ function LeaveForm() {
     <div className="leave-form">
       <h2>Leave Request</h2>
       <form onSubmit={handleSubmit}>
-        <input type="date" name="start_date" value={form.start_date} onChange={handleChange} required />
-        <input type="date" name="end_date" value={form.end_date} onChange={handleChange} required />
-        <textarea name="reason" value={form.reason} onChange={handleChange} placeholder="Reason" required />
+        <label htmlFor="start_date">Start Date</label>
+        <input
+          type="date"
+          id="start_date"
+          name="start_date"
+          value={form.start_date}
+          onChange={handleChange}
+          required
+        />
+        <small>Select the first day of your leave</small>
+
+        <label htmlFor="end_date">End Date</label>
+        <input
+          type="date"
+          id="end_date"
+          name="end_date"
+          value={form.end_date}
+          onChange={handleChange}
+          required
+        />
+        <small>Select the last day of your leave</small>
+
+        <label htmlFor="reason">Reason</label>
+        <textarea
+          id="reason"
+          name="reason"
+          value={form.reason}
+          onChange={handleChange}
+          placeholder="Reason for leave"
+          required
+        />
         <button type="submit">Submit</button>
       </form>
     </div>

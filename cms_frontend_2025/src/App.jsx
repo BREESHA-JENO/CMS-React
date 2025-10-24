@@ -27,6 +27,8 @@ import ForgotPasswordRequests from "./components/Login/ForgotPasswordRequests";
 import DriverAmbulanceDashboard from "./Pages/Ambulance/DriverAmbulanceDashboard";
 import AdminAmbulanceDashboard from "./Pages/Admin/AdminAmbulanceDashboard";
 import ReceptionistAmbulanceDashboard from "./Pages/Receptionist/ReceptionistAmbulanceDashboard";
+import AmbulanceList from "./Pages/Admin/AmbulanceList";
+import AdminAmbulanceRequests from "./Pages/Admin/AdminAmbulanceRequest";
 import "./App.css";
 
 // Add these imports to your existing App.jsx
@@ -297,6 +299,26 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/admin/ambulance-list"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN"]}>
+              <DashboardLayout darkMode={darkMode} setDarkMode={setDarkMode}>
+                <AmbulanceList />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route 
+          path="/admin/ambulance-requests" 
+          element={
+          <ProtectedRoute allowedRoles={["ADMIN"]}>
+              <DashboardLayout darkMode={darkMode} setDarkMode={setDarkMode}>
+                <AdminAmbulanceRequests />
+              </DashboardLayout>
+            </ProtectedRoute>
+          } />
+
         <Route
           path="/receptionist/ambulance"
           element={

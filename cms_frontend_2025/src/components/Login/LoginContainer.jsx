@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LoginPage from "../../Pages/Login/LoginPage";
 import { loginUser, forgotPasswordRequest } from "../../Service/loginapi";
+import { getMyStaffProfile } from "../../Service/admin_api"; // use new import
 
 function LoginContainer() {
   const [username, setUsername] = useState("");
@@ -37,6 +38,18 @@ function LoginContainer() {
       localStorage.setItem("accessToken", data.access);
       localStorage.setItem("refreshToken", data.refresh);
       localStorage.setItem("user", JSON.stringify(data.user));
+
+      // Fetch only the current user's staff profile (works for any role)
+      try {
+        const myStaffRes = await getMyStaffProfile();
+        const staff = myStaffRes.data;
+        if (staff && staff.profile_image) {
+          const userWithPic = { ...data.user, profile_image: staff.profile_image };
+          localStorage.setItem("user", JSON.stringify(userWithPic));
+        }
+      } catch (e) {
+        // tolerate missing/failure
+      }
 
       setTimeout(() => {
         const role = data.user.role;

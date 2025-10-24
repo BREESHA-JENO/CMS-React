@@ -14,6 +14,7 @@ function Sidebar({ open, role, onClose }) {
       { path: "/admin/staff-list", label: "Staff List" },
       { path: "/leave-list", label: "Leave Requests" },
       { path: "/admin/ambulance", label: "Ambulance Management" }, 
+      { path: "/admin/ambulance-requests", label: "Ambulance Requests" },
       { path: "/settings", label: "Settings" }
     ];
   } else if (role === "REC") {

@@ -11,11 +11,17 @@ export const enableStaff = (id) => api.post(`/api/admin/staff/${id}/enable/`);
 
 
 // LEAVE REQUESTS
-export const getLeaveRequests = () => api.get("/admin/leave-requests/");
-export const createLeaveRequest = (data) => api.post("/admin/leave-requests/", data);
-export const updateLeaveRequestStatus = (id, data) => api.patch(`/admin/leave-requests/${id}/`, data);
+export const getLeaveRequests = () => api.get("/api/admin/leave-requests/");
+export const createLeaveRequest = (data) => api.post("/api/admin/leave-requests/", data);
+export const updateLeaveRequestStatus = (id, data) => api.patch(`/api/admin/leave-requests/${id}/`, data);
 
 export const changePassword = (data) => api.post("/api/admin/change-password/", data);
+
+export const getMyStaffProfile = () => api.get("/api/admin/staff/me/");
+
+// NOTIFICATIONS
+export const getNotifications = () => api.get("/api/admin/notifications/");
+export const markAllRead = () => api.post("/api/admin/notifications/mark_all_read/");
 
 // SPECIALIZATIONS
 export const getSpecializations = () => api.get("/api/admin/specializations/");

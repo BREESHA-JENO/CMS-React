@@ -131,9 +131,49 @@
 }
 
 /* Dark mode */
-.dashboard-header.dark {
-  background-color: #18232b;
+.dashboard-header.dark .notification-dropdown,
+.notification-dropdown.dark {
+  background: #232c3a;
   color: #fbf34d;
+}
+
+.dashboard-header.dark .notification-item {
+  background: #222950;
+  color: #fbf34d;
+}
+
+
+.notification-dropdown {
+  background: #fff;
+  color: #003087; /* Make text dark blue for contrast on white */
+  box-shadow: 0 6px 20px rgba(0,0,0,0.10);
+  border-radius: 11px;
+  min-width: 300px;
+  padding: 16px 14px 10px 14px;
+  margin-top: 14px;
+  position: absolute;
+  right: 0;
+  top: 55px;
+  z-index: 199;
+}
+
+.notification-item {
+  background: #e9f3ff; /* subtle background for items */
+  color: #003087;      /* ensure message/titles are visible */
+  border-radius: 7px;
+  padding: 8px 10px;
+  margin-bottom: 6px;
+}
+
+.notification-title {
+  font-weight: 700;
+  margin-bottom: 2px;
+  color: #003087;
+}
+
+.notification-message {
+  color: #174474; /* darker text for message */
+  font-size: 0.96rem;
 }
 
 
