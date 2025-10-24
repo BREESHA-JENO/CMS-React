@@ -8,13 +8,15 @@
   position: fixed;
   bottom: 0;
   left: 0;
+  z-index: 10;
 }
 
-.footer1.dark {
-  background: #1a2533;
-  color: #fbf34d;
+.dashboard-footer.dark,
+body.dark-mode .dashboard-footer {
+  background: #1a2533 !important;
+  color: #fbf34d !important;
 }
-
-.footer1.dark p {
-  color: #fbf34d;
+.dashboard-footer.dark p,
+body.dark-mode .dashboard-footer p {
+  color: #fbf34d !important;
 }

@@ -101,12 +101,12 @@ function LoginPage({
             </p>
             <form onSubmit={handleForgotPassword} className="forgot-form" noValidate>
               <div className="form-group">
-                <label htmlFor="fpEmail">Email Address</label>
+                <label htmlFor="fpEmail">Username or Email</label>
                 <input
-                  type="email"
+                  type="text"
                   id="fpEmail"
                   value={fpEmail}
-                  placeholder="Enter your email"
+                  placeholder="Enter your username or email"
                   onChange={(e) => setFpEmail(e.target.value)}
                   required
                   disabled={isLoading}

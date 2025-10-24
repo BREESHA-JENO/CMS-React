@@ -1,7 +1,7 @@
 
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 
-// Website pages (public)
 import Home from "./Pages/Website/Home";
 import AboutUs from "./Pages/Website/AboutUs";
 import Contact from "./Pages/Website/Contact";
@@ -12,107 +12,339 @@ import DashboardLayout from "./Layout/DashboardLayout";
 import LeaveForm from "./Pages/Leave/LeaveForm";
 import LeaveList from "./Pages/Leave/LeaveList";
 import Profile from "./Pages/Profile/Profile";
-
-
-import './App.css';
-import AdminDashboard from "./Pages/Admin/Admin_dashboard";
-
+import StaffForm from "./components/Admin/StaffForm";
+import StaffList from "./components/Admin/StaffList";
+import SpecializationForm from "./components/Admin/SpecializationForm";
+import StaffManagementDashboard from "./Pages/Admin/StaffDashboard";
+import SpecializationsDashboard from "./Pages/Admin/SpecializationDashboard";
+import SpecializationTable from "./components/Admin/SpecializationTable";
 import LoginContainer from "./components/Login/LoginContainer";
 import ProtectedRoute from "./Utils/ProtectedRoute";
-// Module dashboards (protected)
-// import AdminDashboard from "./modules/admin/AdminDashboard";
-// import ReceptionistDashboard from "./modules/receptionist/ReceptionistDashboard";
-// import DoctorDashboard from "./modules/doctor/Doctorashboard";
-// import LabDashboard from "./modules/labtechnician/LabDashboard";
-// import PharmacistDashboard from "./modules/pharmacist/PharmacistDashboard";
-import DoctorDashboard from "./Pages/Doctor/Doctor_dashboard";
+import AdminDashboard from "./Pages/Admin/Admin_dashboard";
+import SpecializationSearch from "./components/Admin/SpecializationSearch";
+import StaffSearch from "./components/Admin/StaffSearch";
+import ChangePassword from "./Pages/Profile/ChangePassword";
+import ForgotPasswordRequests from "./components/Login/ForgotPasswordRequests";
+import DriverAmbulanceDashboard from "./Pages/Ambulance/DriverAmbulanceDashboard";
+import AdminAmbulanceDashboard from "./Pages/Admin/AdminAmbulanceDashboard";
+import ReceptionistAmbulanceDashboard from "./Pages/Receptionist/ReceptionistAmbulanceDashboard";
+import "./App.css";
 
-// Auth
-// import Login from "./auth/Login";
-
-// ProtectedRoute Component
-// const ProtectedRoute = ({ children, allowedId }) => {
-//   const user = JSON.parse(localStorage.getItem("user")); // e.g., { id: 1, name: "Admin" }
-
-//   if (!user) return <Navigate to="/login" replace />; // Not logged in
-//   if (allowedId && user.id !== allowedId) return <Navigate to="/login" replace />; // ID mismatch
-
-//   return children;
-// };
+// Add these imports to your existing App.jsx
+import ReceptionistDashboard from "./Pages/Receptionist/Receptionist_dashboard";
+import ManagePatients from "./Pages/Receptionist/ManagePatients";
+import AddPatient from "./components/Receptionist/AddPatients";
+import PatientList from "./components/Receptionist/PatientList";
+import PatientSearch from "./components/Receptionist/PatientSearch";
+import EditPatient from "./components/Receptionist/EditPatient";
+import DeletePatient from "./components/Receptionist/DeletePatient";
+import SelectPatientEdit from './components/Receptionist/SelectPatientEdit';
+import ManageAppointments from './Pages/Receptionist/ManageAppointments';
+import AddAppointment from './components/Receptionist/AddAppointments';
+import AppointmentList from './components/Receptionist/AppointmentList';
+import AppointmentSearch from './components/Receptionist/AppointmentSearch';
+import EditAppointment from './components/Receptionist/EditAppointments';
 
 function App() {
+  const [darkMode, setDarkMode] = useState(
+    () => localStorage.getItem("darkMode") === "true"
+  );
+
+  useEffect(() => {
+    localStorage.setItem("darkMode", darkMode ? "true" : "false");
+    if (darkMode) {
+      document.body.classList.add("dark-mode");
+    } else {
+      document.body.classList.remove("dark-mode");
+    }
+  }, [darkMode]);
+
   return (
     <BrowserRouter>
-      {/* <Header /> */}
       <Routes>
-        {/* Public Routes */}
-        <Route path="/" element={ <PublicLayout><Home /></PublicLayout>} />
+        {/* PUBLIC ROUTES */}
+        <Route path="/" element={<PublicLayout><Home /></PublicLayout>} />
         <Route path="/about" element={<PublicLayout><AboutUs /></PublicLayout>} />
         <Route path="/contact" element={<PublicLayout><Contact /></PublicLayout>} />
         <Route path="/departments" element={<PublicLayout><Departments /></PublicLayout>} />
         <Route path="/doctors" element={<PublicLayout><OurDoctors /></PublicLayout>} />
+        <Route path="/login" element={<PublicLayout><LoginContainer /></PublicLayout>} />
 
-        {/* Login */}
-        <Route path="/login" element={
-          <div className="login-center-wrapper">
-            <LoginContainer />
-          </div>
-         } />
-
-        {/* Protected Routes for modules */}
         <Route
-          path="/admin"
+          path="/admin/forgot-password-requests"
           element={
-            <ProtectedRoute allowedId={1}>
-              <DashboardLayout>
-              <AdminDashboard />
+            <ProtectedRoute allowedRoles={["ADMIN"]}>
+              <DashboardLayout darkMode={darkMode} setDarkMode={setDarkMode}>
+                <ForgotPasswordRequests />
               </DashboardLayout>
             </ProtectedRoute>
           }
         />
-        {/* Leave Management */}
-        <Route path="/leave-form" element={<DashboardLayout><LeaveForm /></DashboardLayout>} />
-        <Route path="/leave-list" element={<DashboardLayout><LeaveList /></DashboardLayout>} />
-        <Route path="/profile" element={<DashboardLayout><Profile /></DashboardLayout>} />
 
-        {/* <Route
-          path="/receptionist"
+        {/* DASHBOARD/ADMIN ROUTES */}
+        <Route
+          path="/admin"
           element={
-            <ProtectedRoute allowedId={2}>
-              <ReceptionistDashboard />
+            <ProtectedRoute allowedRoles={["ADMIN"]}>
+              <DashboardLayout darkMode={darkMode} setDarkMode={setDarkMode}>
+                <AdminDashboard darkMode={darkMode} />
+              </DashboardLayout>
             </ProtectedRoute>
           }
-        /> */}
+        />
         <Route
-          path="/DoctorDashboard"
+          path="/admin/staff-management"
           element={
-            // <ProtectedRoute allowedId={3}>
-              <DoctorDashboard />
+            <ProtectedRoute allowedRoles={["ADMIN"]}>
+              <DashboardLayout darkMode={darkMode} setDarkMode={setDarkMode}>
+                <StaffManagementDashboard darkMode={darkMode} />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/specializations-dashboard"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN"]}>
+              <DashboardLayout darkMode={darkMode} setDarkMode={setDarkMode}>
+                <SpecializationsDashboard darkMode={darkMode} />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/admin/staff-list" element={
+          <ProtectedRoute allowedRoles={["ADMIN"]}>
+            <DashboardLayout darkMode={darkMode} setDarkMode={setDarkMode}>
+              <StaffList darkMode={darkMode} />
+            </DashboardLayout>
+          </ProtectedRoute>
+        } />
+        <Route path="/admin/staff-form/:id?" element={
+          <ProtectedRoute allowedRoles={["ADMIN"]}>
+            <DashboardLayout darkMode={darkMode} setDarkMode={setDarkMode}>
+              <StaffForm darkMode={darkMode} />
+            </DashboardLayout>
+          </ProtectedRoute>
+        } />
+        <Route path="/admin/staff-search" element={
+          <ProtectedRoute allowedRoles={["ADMIN"]}>
+            <DashboardLayout darkMode={darkMode} setDarkMode={setDarkMode}>
+              <StaffSearch />
+            </DashboardLayout>
+          </ProtectedRoute>
+        } />
+
+        <Route
+          path="/admin/specializations/add"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN"]}>
+              <DashboardLayout darkMode={darkMode} setDarkMode={setDarkMode}>
+                <SpecializationForm darkMode={darkMode} />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/specializations/edit/:id"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN"]}>
+              <DashboardLayout darkMode={darkMode} setDarkMode={setDarkMode}>
+                <SpecializationForm darkMode={darkMode} />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/specializations"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN"]}>
+              <DashboardLayout darkMode={darkMode} setDarkMode={setDarkMode}>
+                <SpecializationTable darkMode={darkMode} />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/specializations/search"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN"]}>
+              <DashboardLayout darkMode={darkMode} setDarkMode={setDarkMode}>
+                <SpecializationSearch />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+        {/* DASHBOARD/RECEPTIONIST ROUTES */}
+        <Route
+          path="/receptionist"
+          element={
+            <ProtectedRoute role="REC">
+              <ReceptionistDashboard/>
+            </ProtectedRoute>
+          }
+        />
+        <Route 
+            path="/manage-patients" 
+            element={
+              <ProtectedRoute role="REC">
+                <ManagePatients />
+              </ProtectedRoute>
+            } 
+        />
+        <Route 
+          path="/add-patient" 
+          element={
+            <ProtectedRoute role="REC">
+              <AddPatient />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/patient-list" 
+          element={
+            <ProtectedRoute role="REC">
+              <PatientList />
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="/patient-search" 
+          element={
+            <ProtectedRoute role="REC">
+              <PatientSearch />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/edit-patient/:id" 
+          element={
+            <ProtectedRoute role="REC">
+              <EditPatient />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/edit-patient" 
+          element={
+            <ProtectedRoute role="REC">
+              <SelectPatientEdit />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/delete-patient" 
+          element={
+            <ProtectedRoute role="REC">
+              <DeletePatient />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/manage-appointments" 
+          element={
+            <ProtectedRoute role="REC">
+              <ManageAppointments />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/add-appointment" 
+          element={
+            <ProtectedRoute role="REC">
+              <AddAppointment />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/appointment-list" 
+          element={
+            <ProtectedRoute role="REC">
+              <AppointmentList />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/appointment-search" 
+          element={
+            <ProtectedRoute role="REC">
+              <AppointmentSearch />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/edit-appointment/:id" 
+          element={
+            <ProtectedRoute role="REC">
+              <EditAppointment />
+            </ProtectedRoute>
+          } 
+        />
+        <Route
+          path="/ambulance"
+          element={
+            // <ProtectedRoute allowedRoles={["AMB"]}>
+              <DriverAmbulanceDashboard />
             // </ProtectedRoute>
           }
         />
-        
-        {/* <Route
-          path="/lab"
+        <Route
+          path="/admin/ambulance"
           element={
-            <ProtectedRoute allowedId={4}>
-              <LabDashboard />
+            <ProtectedRoute allowedRoles={["ADMIN"]}>
+              <DashboardLayout darkMode={darkMode} setDarkMode={setDarkMode}>
+                <AdminAmbulanceDashboard />
+              </DashboardLayout>
             </ProtectedRoute>
           }
         />
         <Route
-          path="/pharmacist"
+          path="/receptionist/ambulance"
           element={
-            <ProtectedRoute allowedId={5}>
-              <PharmacistDashboard />
+            <ProtectedRoute allowedRoles={["REC"]}>
+              <DashboardLayout darkMode={darkMode} setDarkMode={setDarkMode}>
+                <ReceptionistAmbulanceDashboard />
+              </DashboardLayout>
             </ProtectedRoute>
           }
-        /> */}
+        />
 
-        {/* Catch all */}
-        {/* <Route path="*" element={<Navigate to="/" />} /> */}
+        <Route
+          path="/leave-form"
+          element={
+            <DashboardLayout darkMode={darkMode} setDarkMode={setDarkMode}>
+              <LeaveForm darkMode={darkMode} />
+            </DashboardLayout>
+          }
+        />
+        <Route
+          path="/leave-list"
+          element={
+            <DashboardLayout darkMode={darkMode} setDarkMode={setDarkMode}>
+              <LeaveList darkMode={darkMode} />
+            </DashboardLayout>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <DashboardLayout darkMode={darkMode} setDarkMode={setDarkMode}>
+              <Profile darkMode={darkMode} />
+            </DashboardLayout>
+          }
+        />
+        {/* Add more dashboard/protected routes as needed */}
+        <Route
+        path="/change-password"
+        element={
+          <ProtectedRoute allowedRoles={["ADMIN", "REC", "DOC", "LAB", "PHARM", "AMB"]}>
+            <DashboardLayout darkMode={darkMode} setDarkMode={setDarkMode}>
+              <ChangePassword />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
       </Routes>
-      {/* <Footer /> */}
     </BrowserRouter>
   );
 }

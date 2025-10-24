@@ -60,19 +60,19 @@ function LoginContainer() {
   };
 
   const handleForgotPassword = async (e) => {
-    e.preventDefault();
-    if (!fpEmail.trim()) {
-      setFpMessage("Please enter your email.");
-      return;
-    }
+  e.preventDefault();
+  if (!fpEmail.trim()) {
+    setFpMessage("Please enter your username/email.");
+    return;
+  }
+  try {
+    const res = await forgotPasswordRequest(fpEmail); // Use fpEmail here!
+    setFpMessage(res.data.message || "Request sent to admin.");
+  } catch {
+    setFpMessage("Error sending request.");
+  }
+};
 
-    try {
-      const res = await forgotPasswordRequest(fpEmail);
-      setFpMessage(res.data.message || "Request sent to admin.");
-    } catch {
-      setFpMessage("Error sending request.");
-    }
-  };
 
   return (
     <LoginPage
