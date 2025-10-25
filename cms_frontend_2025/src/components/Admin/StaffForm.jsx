@@ -30,7 +30,7 @@ const StaffForm = () => {
     gender: "",
     blood_group: "",
     address: "",
-    role: "REC",
+    role: "",
     specialization_id: "",
     consultation_fee: "",
     schedules: [],

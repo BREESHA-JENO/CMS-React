@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { getLeaveRequests } from '../../Service/admin_api';
-import './Leave.css';
+import { getLeaveRequests, updateLeaveRequestStatus } from '../../Service/admin_api';
+import './Leave.css'; // Your CSS for styling
 
 function LeaveList() {
   const [leaves, setLeaves] = useState([]);
@@ -8,10 +8,11 @@ function LeaveList() {
 
   const fetchLeaves = async () => {
     try {
-      const response = await getLeaveRequests(); // Use the imported service function
+      const response = await getLeaveRequests();
       setLeaves(response.data);
     } catch (error) {
       console.error('Error fetching leave requests:', error);
+      alert('Error loading leave requests');
     } finally {
       setLoading(false);
     }
@@ -20,6 +21,18 @@ function LeaveList() {
   useEffect(() => {
     fetchLeaves();
   }, []);
+
+  // Handler for approving or rejecting leave
+  const handleStatusChange = async (id, newStatus) => {
+    try {
+      await updateLeaveRequestStatus(id, { status: newStatus });
+      alert(`Leave request ${newStatus.toLowerCase()} successfully.`);
+      fetchLeaves();
+    } catch (error) {
+      console.error('Error updating leave request status:', error);
+      alert('Failed to update leave request status.');
+    }
+  };
 
   if (loading) {
     return <p>Loading leave requests...</p>;
@@ -38,6 +51,7 @@ function LeaveList() {
             <th>Reason</th>
             <th>Status</th>
             <th>Requested</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -53,11 +67,23 @@ function LeaveList() {
                   {leave.status}
                 </td>
                 <td>{new Date(leave.requested_at).toLocaleDateString()}</td>
+                <td>
+                  {leave.status === 'PENDING' && (
+                    <>
+                      <button onClick={() => handleStatusChange(leave.id, 'APPROVED')}>
+                        Approve
+                      </button>
+                      <button onClick={() => handleStatusChange(leave.id, 'REJECTED')}>
+                        Reject
+                      </button>
+                    </>
+                  )}
+                </td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan="7" className="no-data">
+              <td colSpan="8" className="no-data">
                 No leave requests found.
               </td>
             </tr>

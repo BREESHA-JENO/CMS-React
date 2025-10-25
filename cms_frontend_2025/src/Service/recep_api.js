@@ -127,6 +127,10 @@ export const appointmentAPI = {
 // BILLING API CALLS
 // ============================================
 
+// ============================================
+// BILLING API CALLS
+// ============================================
+
 export const billingAPI = {
   // Get all billing records
   getAll: () => api.get('/billing/'),
@@ -142,6 +146,10 @@ export const billingAPI = {
   
   // Partial update (mark as paid)
   partialUpdate: (id, billingData) => api.patch(`/billing/${id}/`, billingData),
+  
+  // ✅ ADD THIS METHOD - Update payment status
+  updateStatus: (id, status) => 
+    api.patch(`/billing/${id}/`, { billing_status: status }),
   
   // Get pending billing count
   getPendingCount: async () => {
@@ -163,6 +171,7 @@ export const billingAPI = {
     return { total, paid, unpaid, count: bills.length };
   },
 };
+
 
 // ============================================
 // STAFF/DOCTOR API

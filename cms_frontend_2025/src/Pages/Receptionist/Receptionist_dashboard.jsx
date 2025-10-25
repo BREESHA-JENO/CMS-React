@@ -1,7 +1,7 @@
 // src/pages/Receptionist/Receptionist_Dashboard.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaUsers, FaCalendarAlt, FaFileInvoiceDollar, FaUserInjured, FaClock, FaMoneyBillWave } from 'react-icons/fa';
+import { FaUsers, FaCalendarAlt, FaFileInvoiceDollar, FaUserInjured, FaClock, FaMoneyBillWave, FaAmbulance } from 'react-icons/fa';
 import Header1 from '../../Elements/Header1';
 import Footer1 from '../../Elements/Footer1';
 import Sidebar from '../../Elements/Sidebar';
@@ -70,6 +70,13 @@ const ReceptionistDashboard = () => {
       path: '/manage-billing',
       description: 'Handle billing and payments',
     },
+    {
+    title: 'Accident & Emergency',
+    icon: <FaAmbulance />,
+    color: '#dc3545',
+    path: '/ae-module',
+    description: 'Emergency patient management',
+  },
   ];
 
   const statsCards = [

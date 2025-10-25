@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LoginPage from "../../Pages/Login/LoginPage";
 import { loginUser, forgotPasswordRequest } from "../../Service/loginapi";
+import { getMyStaffProfile } from "../../Service/admin_api";
 
 function LoginContainer() {
   const [username, setUsername] = useState("");
@@ -12,6 +13,7 @@ function LoginContainer() {
   const [showForgot, setShowForgot] = useState(false);
   const [fpEmail, setFpEmail] = useState("");
   const [fpMessage, setFpMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false); // Add loading state
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -19,13 +21,16 @@ function LoginContainer() {
     setUsernameError("");
     setPasswordError("");
     setSuccessMsg("");
+    setIsLoading(true);
 
     if (!username.trim()) {
       setUsernameError("Please enter username");
+      setIsLoading(false);
       return;
     }
     if (!password.trim()) {
       setPasswordError("Please enter password");
+      setIsLoading(false);
       return;
     }
 
@@ -37,6 +42,18 @@ function LoginContainer() {
       localStorage.setItem("accessToken", data.access);
       localStorage.setItem("refreshToken", data.refresh);
       localStorage.setItem("user", JSON.stringify(data.user));
+
+      // Fetch only the current user's staff profile
+      try {
+        const myStaffRes = await getMyStaffProfile();
+        const staff = myStaffRes.data;
+        if (staff && staff.profile_image) {
+          const userWithPic = { ...data.user, profile_image: staff.profile_image };
+          localStorage.setItem("user", JSON.stringify(userWithPic));
+        }
+      } catch (e) {
+        // tolerate missing/failure
+      }
 
       setTimeout(() => {
         const role = data.user.role;
@@ -50,29 +67,47 @@ function LoginContainer() {
       }, 1000);
     } catch (error) {
       if (error.response) {
-        const msg = error.response.data.error || "Login failed";
-        if (msg.toLowerCase().includes("username")) setUsernameError(msg);
-        else setPasswordError(msg);
+        const status = error.response.status;
+        const errorData = error.response.data;
+        
+        // Check for blocked account (403 Forbidden)
+        if (status === 403 && errorData.error) {
+          setPasswordError(errorData.error);
+        } 
+        // Check for other errors
+        else {
+          const msg = errorData.error || errorData.detail || "Login failed";
+          if (msg.toLowerCase().includes("username") || msg.toLowerCase().includes("email")) {
+            setUsernameError(msg);
+          } else {
+            setPasswordError(msg);
+          }
+        }
       } else {
-        setPasswordError("Network error");
+        setPasswordError("Network error. Please try again.");
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleForgotPassword = async (e) => {
-  e.preventDefault();
-  if (!fpEmail.trim()) {
-    setFpMessage("Please enter your username/email.");
-    return;
-  }
-  try {
-    const res = await forgotPasswordRequest(fpEmail); // Use fpEmail here!
-    setFpMessage(res.data.message || "Request sent to admin.");
-  } catch {
-    setFpMessage("Error sending request.");
-  }
-};
-
+    e.preventDefault();
+    if (!fpEmail.trim()) {
+      setFpMessage("Please enter your username/email.");
+      return;
+    }
+    setIsLoading(true);
+    try {
+      const res = await forgotPasswordRequest(fpEmail);
+      setFpMessage(res.data.message || "Request sent to admin.");
+    } catch (error) {
+      const msg = error.response?.data?.error || "Error sending request.";
+      setFpMessage(msg);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <LoginPage
@@ -90,6 +125,7 @@ function LoginContainer() {
       setFpEmail={setFpEmail}
       fpMessage={fpMessage}
       handleForgotPassword={handleForgotPassword}
+      isLoading={isLoading}
     />
   );
 }

@@ -1,8 +1,17 @@
 // src/Service/amb_api.js
 import api from "./api";
 
-// Fetch ambulances (for Admin or Driver views)
-export const getAmbulances = () => api.get("/api/ambulance/ambulances/");
+export const getAmbulances = () =>
+  api.get("/api/ambulance/ambulances/");
+
+export const createAmbulance = (data) =>
+  api.post("/api/ambulance/ambulances/", data);
+
+export const updateAmbulance = (id, data) =>
+  api.put(`/api/ambulance/ambulances/${id}/`, data);
+
+export const deleteAmbulance = (id) =>
+  api.delete(`/api/ambulance/ambulances/${id}/`);
 
 // Fetch ambulance requests (for driver or receptionist views)
 export const getAmbulanceRequests = () => api.get("/api/ambulance/requests/");

@@ -17,28 +17,19 @@ function Sidebar({ open, role, onClose }) {
       { path: "/admin/staff-form/:id?", label: "Add Staff" },
       { path: "/admin/staff-list", label: "Staff List" },
       { path: "/leave-list", label: "Leave Requests" },
-      { path: "/admin/ambulance", label: "Ambulance Management" },
+      { path: "/admin/ambulance", label: "Ambulance Management" }, 
+      { path: "/admin/ambulance-requests", label: "Ambulance Requests" },
       { path: "/settings", label: "Settings" }
     ];
   } else if (role === "REC") {
     links = [
       { path: "/receptionist", label: "Receptionist Dashboard" },
-      { path: "/patient-list", label: "Patient List" },
+      { path: "/manage-patients", label: "Patients" },
       { path: "/manage-appointments", label: "Appointments" },
-      { path: "/receptionist/ambulance", label: "Ambulance Requests" }
-    ];
-  } else if (role === "DOC") {
-    links = [
-      { path: "/doctor", label: "Doctor Dashboard", icon: <FaHome /> },
-      { path: "/doctor/appointments", label: "View Appointments", icon: <FaCalendarAlt /> }
-    ];
-  } else if (role === "AMB") {
-    links = [
-      { path: "/ambulance", label: "Ambulance Dashboard" },
-      { path: "/profile", label: "Profile" },
+      { path: "/manage-billing", label: "Billing" },
+      { path: "/ae-module", label: "Accident & Emergency" }
     ];
   }
-  // add more roles as needed...
 
   return (
     <aside className="sidebar">
@@ -61,8 +52,13 @@ function Sidebar({ open, role, onClose }) {
       <ul>
         {links.map(link => (
           <li key={link.path}>
-            <button className="nav-link" onClick={() => { navigate(link.path); onClose(); }}>
-              {link.icon && <span className="nav-icon">{link.icon}</span>}
+            <button 
+              className="nav-link" 
+              onClick={() => { 
+                navigate(link.path); 
+                onClose(); 
+              }}
+            >
               {link.label}
             </button>
           </li>
