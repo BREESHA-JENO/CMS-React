@@ -9,7 +9,7 @@ const PrescriptionForm = ({ consultation, staffId, onSubmit, onClose }) => {
     consultation_id: consultation?.consultation_auto_id || '',
     appointment_id: consultation?.appointment_id?.id || '',
     staff_id: staffId || '',
-    medicines: [
+    details: [
       {
         medicine: '',
         dosage: '',
@@ -42,14 +42,14 @@ const PrescriptionForm = ({ consultation, staffId, onSubmit, onClose }) => {
         [e.target.name]: e.target.value
       });
     } else {
-      const newMedicines = [...formData.medicines];
-      newMedicines[index] = {
-        ...newMedicines[index],
+      const newDetails = [...formData.details];
+      newDetails[index] = {
+        ...newDetails[index],
         [e.target.name]: e.target.value
       };
       setFormData({
         ...formData,
-        medicines: newMedicines
+        details: newDetails
       });
     }
   };
@@ -57,28 +57,48 @@ const PrescriptionForm = ({ consultation, staffId, onSubmit, onClose }) => {
   const addMedicine = () => {
     setFormData({
       ...formData,
-      medicines: [
-        ...formData.medicines,
+      details: [
+        ...formData.details,
         { medicine: '', dosage: '', quantity: '', instructions: '' }
       ]
     });
   };
 
   const removeMedicine = (index) => {
-    const newMedicines = formData.medicines.filter((_, i) => i !== index);
+    const newDetails = formData.details.filter((_, i) => i !== index);
     setFormData({
       ...formData,
-      medicines: newMedicines
+      details: newDetails
     });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    
+    // Client-side validation for duplicate medicines
+    const medicineIds = formData.details.map(detail => detail.medicine).filter(id => id);
+    const uniqueMedicineIds = new Set(medicineIds);
+    if (medicineIds.length !== uniqueMedicineIds.size) {
+      setError('Duplicate medicines are not allowed. Please remove duplicate entries.');
+      return;
+    }
+    
+    // Check for empty medicine selections
+    const hasEmptyMedicine = formData.details.some(detail => !detail.medicine);
+    if (hasEmptyMedicine) {
+      setError('Please select a medicine for all entries.');
+      return;
+    }
+    
     try {
-      await onSubmit(formData);
+      // Remove staff_id and appointment_id from submission as staff_id is auto-assigned by backend
+      const { staff_id, appointment_id, ...submissionData } = formData;
+      await onSubmit(submissionData);
     } catch (err) {
-      setError(err.response?.data?.error || err.message || 'Submission failed.');
+      // Use user-friendly error message if available
+      const errorMessage = err.userFriendlyMessage || err.response?.data?.error || err.message || 'Failed to save prescription. Please try again.';
+      setError(errorMessage);
     }
   };
 
@@ -115,7 +135,7 @@ const PrescriptionForm = ({ consultation, staffId, onSubmit, onClose }) => {
                   disabled
                 />
               </div>
-              {formData.medicines.map((medicine, index) => (
+              {formData.details.map((medicine, index) => (
                 <div key={index} className="border p-3 mb-3">
                   <h6>Medicine {index + 1}</h6>
                   <div className="mb-3">
@@ -167,7 +187,7 @@ const PrescriptionForm = ({ consultation, staffId, onSubmit, onClose }) => {
                       required
                     />
                   </div>
-                  {formData.medicines.length > 1 && (
+                  {formData.details.length > 1 && (
                     <button
                       type="button"
                       className="btn btn-danger"

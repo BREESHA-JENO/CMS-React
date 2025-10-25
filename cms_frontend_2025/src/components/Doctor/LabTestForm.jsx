@@ -67,18 +67,36 @@ const LabTestForm = ({ consultation, staffId, onSubmit, onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    
+    // Client-side validation for duplicate lab tests
+    const labTestIds = formData.lab_tests.map(test => test.lab_test).filter(id => id);
+    const uniqueLabTestIds = new Set(labTestIds);
+    if (labTestIds.length !== uniqueLabTestIds.size) {
+      setError('Duplicate lab tests are not allowed. Please remove duplicate entries.');
+      return;
+    }
+    
+    // Check for empty lab test selections
+    const hasEmptyLabTest = formData.lab_tests.some(test => !test.lab_test);
+    if (hasEmptyLabTest) {
+      setError('Please select a lab test for all entries.');
+      return;
+    }
+    
     const submissionData = {
-      ...formData,
+      consultation_id: formData.consultation_id,
       details: formData.lab_tests.map(test => ({
         lab_test: test.lab_test,
         instructions: test.instructions
       }))
     };
-    delete submissionData.lab_tests;
+    // Don't send staff_id or appointment_id as they're auto-assigned by backend
     try {
       await onSubmit(submissionData);
     } catch (err) {
-      setError(err.response?.data?.error || err.message || 'Submission failed.');
+      // Use user-friendly error message if available
+      const errorMessage = err.userFriendlyMessage || err.response?.data?.error || err.message || 'Failed to save lab test prescription. Please try again.';
+      setError(errorMessage);
     }
   };
 
@@ -130,7 +148,7 @@ const LabTestForm = ({ consultation, staffId, onSubmit, onClose }) => {
                       <option value="">Select lab test</option>
                       {labTestsList.map(lab => (
                         <option key={lab.Id} value={lab.Id}>
-                          {lab.LabTestName} ({lab.LabTestId})
+                          {lab.test_name} ({lab.test_id})
                         </option>
                       ))}
                     </select>

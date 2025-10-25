@@ -39,5 +39,5 @@ export const deleteDoctorSchedule = (id) => api.delete(`api/admin/doctor-schedul
 // FORGOT PASSWORD REQUESTS
 export const getForgotPasswordRequests = () => api.get("/api/admin/forgot-password-requests/");
 export const processForgotPasswordRequest = (id, data) => api.put(`/api/admin/forgot-password-requests/${id}/`, data);
-export const forgotPasswordRequest = (email) =>api.post("/api/admin/forgot-password-requests/", { staff_email: email });
+export const forgotPasswordRequest = (email) => api.post("/api/admin/forgot-password-requests/", { staff_email: email });
 

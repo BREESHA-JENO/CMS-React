@@ -6,7 +6,7 @@
   height: 100vh;
   background: #11457e;
   color: #fff;
-  box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
   z-index: 1000;
   overflow-y: auto;
   padding-top: 60px;
@@ -55,6 +55,61 @@
   padding: 0;
 }
 
+/* Doctor Info Section */
+.sidebar-doctor-info {
+  padding: 20px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+  text-align: center;
+}
+
+.sidebar-doctor-avatar {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 15px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.sidebar-doctor-details {
+  color: #fff;
+}
+
+.sidebar-doctor-name {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  color: #fff;
+}
+
+.sidebar-doctor-id {
+  font-size: 0.85rem;
+  margin: 0 0 5px 0;
+  opacity: 0.9;
+  color: #a9d5f5;
+}
+
+.sidebar-doctor-specialty {
+  font-size: 0.9rem;
+  margin: 0;
+  opacity: 0.85;
+  font-style: italic;
+  color: #a9d5f5;
+}
+
+/* Navigation Icon */
+.nav-icon {
+  display: inline-block;
+  margin-right: 10px;
+  font-size: 1.1rem;
+  vertical-align: middle;
+}
+
 .sidebar.dark {
   background: #202b38;
   color: #fbf34d;
@@ -76,8 +131,27 @@
     min-width: 180px;
     padding-top: 50px;
   }
+
   .sidebar .nav-link {
     font-size: 1rem;
     padding: 10px 14px;
+  }
+
+  .sidebar-doctor-info {
+    padding: 15px;
+  }
+
+  .sidebar-doctor-avatar {
+    width: 60px;
+    height: 60px;
+  }
+
+  .sidebar-doctor-name {
+    font-size: 1rem;
+  }
+
+  .sidebar-doctor-id,
+  .sidebar-doctor-specialty {
+    font-size: 0.8rem;
   }
 }

@@ -2,8 +2,12 @@ import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const ConsultationForm = ({ appointment, staffId, onSubmit, onClose }) => {
+  // Debug: Log appointment data to see what fields are available
+  console.log('ConsultationForm - Appointment data:', appointment);
+  console.log('ConsultationForm - Staff ID:', staffId);
+  
   const [formData, setFormData] = useState({
-    appointment_id: appointment?.appointment_auto_id || '',
+    appointment_id: appointment?.appointment_auto_id || appointment?._appointmentAutoId || appointment?.id || '',
     staff_id: staffId || '',
     symptoms: '',
     diagnosis: '',
@@ -22,9 +26,15 @@ const ConsultationForm = ({ appointment, staffId, onSubmit, onClose }) => {
     e.preventDefault();
     setError('');
     try {
-      await onSubmit(formData);
+      // Remove staff_id from submission as it's auto-assigned by backend
+      const { staff_id, ...submissionData } = formData;
+      console.log('ConsultationForm - Submitting data:', submissionData);
+      await onSubmit(submissionData);
     } catch (err) {
-      setError(err.response?.data?.error || err.message || 'Submission failed.');
+      console.error('ConsultationForm - Submission error:', err);
+      // Use user-friendly error message if available
+      const errorMessage = err.userFriendlyMessage || err.response?.data?.error || err.message || 'Failed to save consultation. Please try again.';
+      setError(errorMessage);
     }
   };
 

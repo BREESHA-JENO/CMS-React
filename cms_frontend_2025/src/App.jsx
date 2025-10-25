@@ -45,6 +45,14 @@ import AppointmentList from './components/Receptionist/AppointmentList';
 import AppointmentSearch from './components/Receptionist/AppointmentSearch';
 import EditAppointment from './components/Receptionist/EditAppointments';
 
+
+
+import DoctorDashboard from "./Pages/Doctor/Doctor_dashboard";  
+import AppointmentsPage from "./Pages/Doctor/Appointments";
+import ConsultPage from "./Pages/Doctor/Consult";
+import HistoryPage from "./Pages/Doctor/History";
+import PrescribePage from "./Pages/Doctor/Prescribe";
+
 function App() {
   const [darkMode, setDarkMode] = useState(
     () => localStorage.getItem("darkMode") === "true"
@@ -344,7 +352,58 @@ function App() {
           </ProtectedRoute>
         }
       />
+      <Route
+          path="/doctor"
+          element={
+            <ProtectedRoute role="DOC">
+              <DashboardLayout darkMode={darkMode} setDarkMode={setDarkMode}>
+                <DoctorDashboard/>
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+      <Route
+          path="/doctor/appointments"
+          element={
+            <ProtectedRoute role="DOC">
+              <DashboardLayout darkMode={darkMode} setDarkMode={setDarkMode}>
+                <AppointmentsPage />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+      <Route
+          path="/doctor/consult"
+          element={
+            <ProtectedRoute role="DOC">
+              <DashboardLayout darkMode={darkMode} setDarkMode={setDarkMode}>
+                <ConsultPage />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+      <Route
+          path="/doctor/history/:patientId"
+          element={
+            <ProtectedRoute role="DOC">
+              <DashboardLayout darkMode={darkMode} setDarkMode={setDarkMode}>
+                <HistoryPage />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+      <Route
+          path="/doctor/prescribe"
+          element={
+            <ProtectedRoute role="DOC">
+              <DashboardLayout darkMode={darkMode} setDarkMode={setDarkMode}>
+                <PrescribePage />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
       </Routes>
+
     </BrowserRouter>
   );
 }
