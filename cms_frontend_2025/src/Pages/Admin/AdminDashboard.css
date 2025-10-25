@@ -1,148 +1,177 @@
-/* ------------------------------------------
-   AdminDashboard Base Styles
-------------------------------------------- */
-.admindash-root {
-  display: flex;
-  min-height: calc(100vh - 42px);
-  background: #f6f8fb;
-  position: relative;
-}
+/* AdminDashboard.css */
 
-/* MAIN CONTENT */
-.admindash-main {
-  flex: 1;
-  padding: 2.4rem 2.7rem;
-  background: #f6f8fb;
+.dashboard-container {
   min-height: 100vh;
-  overflow: auto;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: start;
+  background: #f5f7fa;
+  transition: background 0.3s ease;
 }
 
-/* DASHBOARD CARD GRID */
-.admindash-cards-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 2.2rem;
-  margin: 50px auto 0 auto;
-  max-width: 900px;
+.dashboard-container.dark {
+  background: #1a2332;
+}
+
+.dashboard-content {
+  flex: 1;
+  padding: 80px 2rem 80px 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
   width: 100%;
-  justify-items: center;
 }
 
-/* DASHBOARD CARDS */
-.admindash-card {
-  background: #fff;
-  box-shadow: 0 6px 28px #00308718, 0 2px 8px #00308726;
-  border-radius: 18px;
-  padding: 2.2rem 1.2rem 1.8rem 1.2rem;
-  cursor: pointer;
-  width: 100%;
-  max-width: 250px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.2rem;
-  transition: box-shadow 0.22s, transform 0.16s;
-  outline: none;
-}
-
-.admindash-card:hover, .admindash-card:focus {
-  box-shadow: 0 10px 34px #00308735;
-  transform: translateY(-7px) scale(1.07);
-  border: 2.2px solid #0153b3;
-}
-
-.admindash-card-icon {
-  font-size: 2.8rem;
-  color: #0153b3;
-  margin-bottom: .7rem;
-}
-.admindash-card-label {
-  font-size: 1.19rem;
-  font-weight: 620;
-  color: #003087;
-  letter-spacing: 0.03em;
+.welcome-section {
+  margin-bottom: 2.5rem;
   text-align: center;
 }
 
-/* DASHBOARD PANEL */
-.admindash-panel {
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 8px 30px rgba(0,48,135,0.07), 0 2px 8px #00308718;
-  padding: 2.2rem 1.3rem;
-  margin: 30px auto 0 auto;
-  min-width: 350px;
-  max-width: 800px;
-  width: 100%;
-}
-.admindash-panel h2 {
-  margin-bottom: 1.2rem;
+.welcome-section h1 {
   color: #003087;
-  font-size: 1.25rem;
-  font-weight: 670;
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
 }
 
-/* DASHBOARD PANEL PLACEHOLDER */
-.admindash-placeholder {
-  min-height: 120px;
-  color: #999;
-  background: #f9fafd;
-  border-radius: 8px;
-  border: 1px dashed #d3defd;
+.dark .welcome-section h1 {
+  color: #fbf34d;
+}
+
+.welcome-section p {
+  color: #5a6c7d;
+  font-size: 1.1rem;
+}
+
+.dark .welcome-section p {
+  color: #b8c5d6;
+}
+
+/* Navigation Cards Grid */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.dashboard-card {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.dark .dashboard-card {
+  background: #24304a;
+  color: #fbf34d;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0, 48, 135, 0.15);
+}
+
+.dashboard-card:focus {
+  outline: 2px solid #003087;
+  outline-offset: 2px;
+}
+
+.dark .dashboard-card:focus {
+  outline-color: #fbf34d;
+}
+
+.nav-card {
+  text-align: center;
+  min-height: 200px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: 1.03rem;
-  margin-top: 0.7rem;
 }
 
-/* ------------------------------------------
-   Dark Mode Overrides
-------------------------------------------- */
-.admindash-main.dark {
-  background: #161b20;
-  color: #fff;
+.card-icon {
+  font-size: 3.5rem;
+  margin-bottom: 1rem;
 }
 
-.admindash-cards-grid.dark {
-  background: transparent;
+.nav-card h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #003087;
+  margin-bottom: 0.5rem;
 }
 
-.admindash-card.dark {
-  background: #242b35;
-  color: #fbf34d;
-  box-shadow: 0 6px 20px #161b2018, 0 2px 8px #161b2030;
-}
-.admindash-card.dark .admindash-card-label {
-  color: #fbf34d;
-}
-.admindash-card.dark .admindash-card-icon {
+.dark .nav-card h3 {
   color: #fbf34d;
 }
 
-.admindash-panel.dark {
-  background: #242b35;
-  color: #fbf34d;
-  border: 1.5px solid #28487a;
+.nav-card p {
+  color: #5a6c7d;
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
 }
-.admindash-panel.dark h2 {
+
+.dark .nav-card p {
+  color: #b8c5d6;
+}
+
+.card-arrow {
+  font-size: 1.5rem;
+  color: #003087;
+  font-weight: bold;
+  margin-top: auto;
+}
+
+.dark .card-arrow {
   color: #fbf34d;
 }
 
-.admindash-placeholder.dark {
-  background: #202b38;
-  color: #b6c9e1;
-  border-color: #37618c;
+/* Responsive Design */
+@media (max-width: 768px) {
+  .dashboard-content {
+    padding: 80px 1rem 80px 1rem;
+  }
+
+  .welcome-section h1 {
+    font-size: 1.6rem;
+  }
+
+  .welcome-section p {
+    font-size: 1rem;
+  }
+
+  .cards-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .nav-card {
+    min-height: 160px;
+    padding: 1.5rem;
+  }
+
+  .card-icon {
+    font-size: 2.5rem;
+  }
+
+  .nav-card h3 {
+    font-size: 1.3rem;
+  }
 }
 
-/* ------------------------------------------
-   Responsive Styles
-------------------------------------------- */
-@media (max-width: 750px) {
-  .admindash-cards-grid { grid-template-columns: 1fr; }
-  .admindash-main { padding: 1.2rem 0.4rem; }
+@media (max-width: 480px) {
+  .welcome-section h1 {
+    font-size: 1.4rem;
+  }
+
+  .card-icon {
+    font-size: 2rem;
+  }
+
+  .nav-card h3 {
+    font-size: 1.2rem;
+  }
 }

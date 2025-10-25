@@ -1,48 +1,87 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import { FaUserPlus, FaSearch, FaListAlt, FaEdit, FaUserSlash } from "react-icons/fa";
-import "./SpecializationDashboard.css";
-
-const specializationCards = [
-  { key: "addSpecialization", label: "Add Specialization", icon: <FaUserPlus /> },
-  { key: "listSpecialization", label: "List Specializations", icon: <FaListAlt /> },
-  { key: "searchSpecialization", label: "Search Specialization", icon: <FaSearch /> },
-  { key: "editSpecialization", label: "Edit/View Specialization", icon: <FaEdit /> },
-  { key: "disableSpecialization", label: "Disable Specialization", icon: <FaUserSlash /> }
-];
+// SpecializationsDashboard.jsx
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { FaUserPlus, FaSearch, FaListAlt, FaEdit, FaUserSlash } from 'react-icons/fa';
+import './SpecializationDashboard.css';
 
 const SpecializationsDashboard = ({ darkMode }) => {
   const navigate = useNavigate();
 
-  const handleCardClick = (key) => {
-    if (key === "addSpecialization") {
-      navigate("/admin/specializations/add");
-    } else if (key === "listSpecialization" || key === "editSpecialization" || key === "disableSpecialization") {
-      navigate("/admin/specializations");
-    } else if (key === "searchSpecialization") {
-      navigate("/admin/specializations/search");
-    }
-  };
+  const specializationCards = [
+    {
+      title: 'Add Specialization',
+      icon: <FaUserPlus />,
+      color: '#003087',
+      path: '/admin/specializations/add',
+      description: 'Add new medical specializations',
+    },
+    {
+      title: 'List Specializations',
+      icon: <FaListAlt />,
+      color: '#11457e',
+      path: '/admin/specializations',
+      description: 'View all specializations',
+    },
+    {
+      title: 'Search Specialization',
+      icon: <FaSearch />,
+      color: '#194276',
+      path: '/admin/specializations/search',
+      description: 'Search for specific specializations',
+    },
+    {
+      title: 'Edit/View Specialization',
+      icon: <FaEdit />,
+      color: '#28a745',
+      path: '/admin/specializations',
+      description: 'Edit or view specialization details',
+    },
+    {
+      title: 'Disable Specialization',
+      icon: <FaUserSlash />,
+      color: '#dc3545',
+      path: '/admin/specializations',
+      description: 'Disable specializations',
+    },
+  ];
 
   return (
-    <div className="specdash-root">
-      <button onClick={() => navigate("/admin")} style={{ marginBottom: "1rem" }}>Back to Admin Dashboard</button>
-      <main className={`specdash-main${darkMode ? " dark" : ""}`}>
-        <div className={`specdash-cards-grid${darkMode ? " dark" : ""}`}>
-          {specializationCards.map(item => (
+    <div className={`dashboard-container${darkMode ? ' dark' : ''}`}>
+      <div className="dashboard-content">
+        <div className="back-button-container">
+          <button 
+            onClick={() => navigate('/admin')} 
+            className="btn-back"
+          >
+            ← Back to Admin Dashboard
+          </button>
+        </div>
+
+        <div className="welcome-section">
+          <h1>Specializations Management</h1>
+          <p>Manage medical specializations and categories</p>
+        </div>
+
+        <div className="cards-grid">
+          {specializationCards.map((card, index) => (
             <div
-              key={item.key}
-              className={`specdash-card${darkMode ? " dark" : ""}`}
-              onClick={() => handleCardClick(item.key)}
+              key={index}
+              className="dashboard-card nav-card"
+              onClick={() => navigate(card.path)}
+              style={{ borderTop: `4px solid ${card.color}` }}
               tabIndex={0}
               role="button"
             >
-              <span className="specdash-card-icon">{item.icon}</span>
-              <span className="specdash-card-label">{item.label}</span>
+              <div className="card-icon" style={{ color: card.color }}>
+                {card.icon}
+              </div>
+              <h3>{card.title}</h3>
+              <p>{card.description}</p>
+              <div className="card-arrow">→</div>
             </div>
           ))}
         </div>
-      </main>
+      </div>
     </div>
   );
 };
