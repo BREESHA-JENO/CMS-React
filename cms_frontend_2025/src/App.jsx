@@ -1,8 +1,9 @@
+
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 
 import Home from "./Pages/Website/Home";
-import AboutUs from "./pages/website/AboutUs";
+import AboutUs from "./Pages/Website/AboutUs";
 import Contact from "./Pages/Website/Contact";
 import Departments from "./Pages/Website/Departments";
 import OurDoctors from "./Pages/Website/OurDoctor";
@@ -81,6 +82,14 @@ import ViewTreatment from './components/AE/Treatment/ListTreatments';
 
 import SearchAECase from './components/AE/SearchAECase/SearchAECase';
 import CaseHistory from './components/AE/CaseHistory/CaseHistory';
+
+
+
+import DoctorDashboard from "./Pages/Doctor/Doctor_dashboard";  
+import AppointmentsPage from "./Pages/Doctor/Appointments";
+import ConsultPage from "./Pages/Doctor/Consult";
+import HistoryPage from "./Pages/Doctor/History";
+import PrescribePage from "./Pages/Doctor/Prescribe";
 
 function App() {
   const [darkMode, setDarkMode] = useState(
@@ -534,9 +543,9 @@ function App() {
         <Route
           path="/ambulance"
           element={
-            <ProtectedRoute allowedRoles={["AMB"]}>
+            // <ProtectedRoute allowedRoles={["AMB"]}>
               <DriverAmbulanceDashboard />
-            </ProtectedRoute>
+            // </ProtectedRoute>
           }
         />
         <Route
@@ -615,7 +624,58 @@ function App() {
           </ProtectedRoute>
         }
       />
+      <Route
+          path="/doctor"
+          element={
+            <ProtectedRoute role="DOC">
+              <DashboardLayout darkMode={darkMode} setDarkMode={setDarkMode}>
+                <DoctorDashboard/>
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+      <Route
+          path="/doctor/appointments"
+          element={
+            <ProtectedRoute role="DOC">
+              <DashboardLayout darkMode={darkMode} setDarkMode={setDarkMode}>
+                <AppointmentsPage />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+      <Route
+          path="/doctor/consult"
+          element={
+            <ProtectedRoute role="DOC">
+              <DashboardLayout darkMode={darkMode} setDarkMode={setDarkMode}>
+                <ConsultPage />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+      <Route
+          path="/doctor/history/:patientId"
+          element={
+            <ProtectedRoute role="DOC">
+              <DashboardLayout darkMode={darkMode} setDarkMode={setDarkMode}>
+                <HistoryPage />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+      <Route
+          path="/doctor/prescribe"
+          element={
+            <ProtectedRoute role="DOC">
+              <DashboardLayout darkMode={darkMode} setDarkMode={setDarkMode}>
+                <PrescribePage />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
       </Routes>
+
     </BrowserRouter>
   );
 }
