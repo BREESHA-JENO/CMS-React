@@ -32,8 +32,27 @@ const ConsultationForm = ({ appointment, staffId, onSubmit, onClose }) => {
       await onSubmit(submissionData);
     } catch (err) {
       console.error('ConsultationForm - Submission error:', err);
-      // Use user-friendly error message if available
-      const errorMessage = err.userFriendlyMessage || err.response?.data?.error || err.message || 'Failed to save consultation. Please try again.';
+      
+      // Handle specific validation errors
+      let errorMessage = 'Failed to save consultation. Please try again.';
+      
+      if (err.response?.data?.error) {
+        const backendError = err.response.data.error;
+        
+        // Handle duplicate consultation error
+        if (backendError.includes('already been completed') || backendError.includes('Consultation already exists')) {
+          errorMessage = `⚠️ ${backendError} This appointment has already been consulted.`;
+        } else if (backendError.includes('not assigned')) {
+          errorMessage = `🚫 ${backendError}`;
+        } else {
+          errorMessage = backendError;
+        }
+      } else if (err.userFriendlyMessage) {
+        errorMessage = err.userFriendlyMessage;
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
+      
       setError(errorMessage);
     }
   };
