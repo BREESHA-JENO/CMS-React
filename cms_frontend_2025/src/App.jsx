@@ -25,7 +25,7 @@ import ProtectedRoute from "./Utils/ProtectedRoute";
 // import LabDashboard from "./modules/labtechnician/LabDashboard";
 // import PharmacistDashboard from "./modules/pharmacist/PharmacistDashboard";
 
-// Add these imports to your existing App.jsx
+//reception imports (patient,billing,appointments)
 import ReceptionistDashboard from "./Pages/Receptionist/Receptionist_dashboard";
 import ManagePatients from "./Pages/Receptionist/ManagePatients";
 import AddPatient from "./components/Receptionist/AddPatients";
@@ -39,9 +39,42 @@ import AddAppointment from './components/Receptionist/AddAppointments';
 import AppointmentList from './components/Receptionist/AppointmentList';
 import AppointmentSearch from './components/Receptionist/AppointmentSearch';
 import EditAppointment from './components/Receptionist/EditAppointments';
+import ManageBilling from './Pages/Receptionist/ManageBilling';
+import CreateBilling from './components/Receptionist/CreateBilling';
+import BillingList from './components/Receptionist/BillingList';
+import BillingSearch from './components/Receptionist/BillingSearch';
+
+//A&E module imports
+// ========== A&E MODULE IMPORTS ==========
+
+// AE Landing
+import AELanding from './components/AE/AELanding';
+
+// Temp Patient
+import TempPatientMenu from './components/AE/TempPatient/TempPatientMenu';
+import AddTempPatient from './components/AE/TempPatient/AddTempPatient';
+import ListTempPatients from './components/AE/TempPatient/ListTempPatients';
+import SearchTempPatient from './components/AE/TempPatient/SearchTempPatient';
+import ViewTempPatient from './components/AE/TempPatient/ViewTempPatient';
+import UpdateTempPatient from './components/AE/TempPatient/UpdateTempPatient';
+import ConvertToPermanent from './components/AE/TempPatient/ConvertToPermanent';
+
+// A&E Case
+import AECaseMenu from './components/AE/AECase/AECaseMenu';
+import AddAECase from './components/AE/AECase/AddAECase';
+import ListAECases from './components/AE/AECase/ListAECase';
+import ViewAECase from './components/AE/AECase/ViewAECase';
+import UpdateAECase from './components/AE/AECase/UpdateAECase';
+
+// Treatment
+import TreatmentMenu from './components/AE/Treatment/TreatmentMenu';
+import AddTreatment from './components/AE/Treatment/AddTreatment';
+import ListTreatments from './components/AE/Treatment/ListTreatments';
+import ViewTreatment from './components/AE/Treatment/ListTreatments';
 
 
-
+import SearchAECase from './components/AE/SearchAECase/SearchAECase';
+import CaseHistory from './components/AE/CaseHistory/CaseHistory';
 // Auth
 // import Login from "./auth/Login";
 
@@ -98,6 +131,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+        {/* patient routes */}
         <Route 
             path="/manage-patients" 
             element={
@@ -158,6 +192,7 @@ function App() {
             </ProtectedRoute>
           } 
         />
+        {/* appointment route */}
         <Route 
           path="/manage-appointments" 
           element={
@@ -198,8 +233,267 @@ function App() {
             </ProtectedRoute>
           } 
         />
+        <Route 
+          path="/manage-billing" 
+          element={
+            <ProtectedRoute role="REC">
+              <ManageBilling />
+            </ProtectedRoute>
+          } 
+        />
+        {/* Billing Routes */}
+            <Route 
+              path="/manage-billing" 
+              element={
+                <ProtectedRoute role="REC">
+                  <ManageBilling />
+                </ProtectedRoute>
+              } 
+            />
+
+            <Route 
+              path="/create-billing" 
+              element={
+                <ProtectedRoute role="REC">
+                  <CreateBilling />
+                </ProtectedRoute>
+              } 
+            />
+
+            <Route 
+              path="/billing-list" 
+              element={
+                <ProtectedRoute role="REC">
+                  <BillingList />
+                </ProtectedRoute>
+              } 
+            />
+
+            <Route 
+              path="/billing-search" 
+              element={
+                <ProtectedRoute role="REC">
+                  <BillingSearch />
+                </ProtectedRoute>
+              } 
+            />
+
+            {/* A&E routes */}
+            {/* ========== A&E MODULE ROUTES ========== */}
+
+{/* A&E Landing */}
+<Route 
+  path="/ae-module" 
+  element={
+    <ProtectedRoute role="REC">
+      <AELanding />
+    </ProtectedRoute>
+  } 
+/>
+
+{/* ========== TEMPORARY PATIENT ROUTES ========== */}
+<Route 
+  path="/ae-module/temp-patient-menu" 
+  element={
+    <ProtectedRoute role="REC">
+      <TempPatientMenu />
+    </ProtectedRoute>
+  } 
+/>
+
+<Route 
+  path="/ae-module/add-temp-patient" 
+  element={
+    <ProtectedRoute role="REC">
+      <AddTempPatient />
+    </ProtectedRoute>
+  } 
+/>
+
+<Route 
+  path="/ae-module/list-temp-patients" 
+  element={
+    <ProtectedRoute role="REC">
+      <ListTempPatients />
+    </ProtectedRoute>
+  } 
+/>
+
+<Route 
+  path="/ae-module/search-temp-patient" 
+  element={
+    <ProtectedRoute role="REC">
+      <SearchTempPatient />
+    </ProtectedRoute>
+  } 
+/>
+
+<Route 
+  path="/ae-module/view-temp-patient/:id" 
+  element={
+    <ProtectedRoute role="REC">
+      <ViewTempPatient />
+    </ProtectedRoute>
+  } 
+/>
+
+<Route 
+  path="/ae-module/update-temp-patient/:id" 
+  element={
+    <ProtectedRoute role="REC">
+      <UpdateTempPatient />
+    </ProtectedRoute>
+  } 
+/>
+
+<Route 
+  path="/ae-module/convert-to-permanent/:id" 
+  element={
+    <ProtectedRoute role="REC">
+      <ConvertToPermanent />
+    </ProtectedRoute>
+  } 
+/>
+
+{/* ========== A&E CASE ROUTES ========== */}
+<Route 
+  path="/ae-module/ae-case-menu" 
+  element={
+    <ProtectedRoute role="REC">
+      <AECaseMenu />
+    </ProtectedRoute>
+  } 
+/>
+
+<Route 
+  path="/ae-module/add-ae-case" 
+  element={
+    <ProtectedRoute role="REC">
+      <AddAECase />
+    </ProtectedRoute>
+  } 
+/>
+
+<Route 
+  path="/ae-module/list-ae-cases" 
+  element={
+    <ProtectedRoute role="REC">
+      <ListAECases />
+    </ProtectedRoute>
+  } 
+/>
+
+<Route 
+  path="/ae-module/view-ae-case/:id" 
+  element={
+    <ProtectedRoute role="REC">
+      <ViewAECase />
+    </ProtectedRoute>
+  } 
+/>
+
+<Route 
+  path="/ae-module/update-ae-case/:id" 
+  element={
+    <ProtectedRoute role="REC">
+      <UpdateAECase />
+    </ProtectedRoute>
+  } 
+/>
+
+{/* ========== TREATMENT ROUTES ========== */}
+<Route 
+  path="/ae-module/treatment-menu" 
+  element={
+    <ProtectedRoute role="REC">
+      <TreatmentMenu />
+    </ProtectedRoute>
+  } 
+/>
+
+<Route 
+  path="/ae-module/add-treatment/:caseId" 
+  element={
+    <ProtectedRoute role="REC">
+      <AddTreatment />
+    </ProtectedRoute>
+  } 
+/>
+
+<Route 
+  path="/ae-module/case-treatments/:caseId" 
+  element={
+    <ProtectedRoute role="REC">
+      <ListTreatments />
+    </ProtectedRoute>
+  } 
+/>
+
+<Route 
+  path="/ae-module/view-treatment/:id" 
+  element={
+    <ProtectedRoute role="REC">
+      <ViewTreatment />
+    </ProtectedRoute>
+  } 
+/>
+<Route 
+  path="/ae-module/search-case" 
+  element={
+    <ProtectedRoute role="REC">
+      <SearchAECase  />
+    </ProtectedRoute>
+  } 
+/>
+
+<Route 
+  path="/ae-module/case-history" 
+  element={
+    <ProtectedRoute role="REC">
+      <CaseHistory  />
+    </ProtectedRoute>
+  } 
+/>
 
 
+
+       
+{/* 
+<Route 
+  path="/ae-module/search-temp-patient" 
+  element={
+    <ProtectedRoute role="REC">
+      <SearchTempPatient />
+    </ProtectedRoute>
+  } 
+/>
+
+<Route 
+  path="/ae-module/update-temp-patient" 
+  element={
+    <ProtectedRoute role="REC">
+      <UpdateTempPatient />
+    </ProtectedRoute>
+  } 
+/>
+
+<Route 
+  path="/ae-module/update-temp-patient/:id" 
+  element={
+    <ProtectedRoute role="REC">
+      <UpdateTempPatient />
+    </ProtectedRoute>
+  } 
+/>
+
+<Route 
+  path="/ae-module/convert-to-permanent/:id" 
+  element={
+    <ProtectedRoute role="REC">
+      <ConvertToPermanent />
+    </ProtectedRoute>
+  } 
+/> */}
 
         {/* <Route
           path="/doctor"

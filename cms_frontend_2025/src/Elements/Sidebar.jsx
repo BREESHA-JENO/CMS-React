@@ -18,11 +18,12 @@ function Sidebar({ open, role, onClose }) {
   } else if (role === "REC") {
     links = [
       { path: "/receptionist", label: "Receptionist Dashboard" },
-      { path: "/patient-list", label: "Patient List" },
-      { path: "/manage-appointments", label: "Appointments" }
+      { path: "/manage-patients", label: "Patients" },
+      { path: "/manage-appointments", label: "Appointments" },
+      { path: "/manage-billing", label: "Billing" },
+      { path: "/ae-module", label: "Accident & Emergency" }
     ];
   }
-  // add more roles as needed...
 
   return (
     <aside className="sidebar">
@@ -30,7 +31,13 @@ function Sidebar({ open, role, onClose }) {
       <ul>
         {links.map(link => (
           <li key={link.path}>
-            <button className="nav-link" onClick={() => { navigate(link.path); onClose(); }}>
+            <button 
+              className="nav-link" 
+              onClick={() => { 
+                navigate(link.path); 
+                onClose(); 
+              }}
+            >
               {link.label}
             </button>
           </li>
