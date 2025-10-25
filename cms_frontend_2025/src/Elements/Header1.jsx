@@ -57,8 +57,25 @@ const Header1 = ({
           </button>
         </div>
         <div className="user-info" ref={dropdownRef}>
-          <button className="profile-btn" onClick={() => setOpen((prev) => !prev)}>
-            <FaUserCircle size={34} />
+          <button
+            className="profile-btn"
+            onClick={() => setOpen((prev) => !prev)}
+            style={{ padding: 0, border: "none", background: "transparent" }}
+          >
+            {user?.profile_image ? (
+              <img
+                src={user.profile_image}
+                alt={`${user.username}'s profile`}
+                style={{
+                  width: 34,
+                  height: 34,
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                }}
+              />
+            ) : (
+              <FaUserCircle size={34} />
+            )}
           </button>
           {open && (
             <div className="profile-dropdown">
@@ -70,7 +87,6 @@ const Header1 = ({
               <button onClick={() => navigate("/profile")}>Profile</button>
               <button onClick={() => navigate("/change-password")}>Change Password</button>
               <button onClick={() => navigate("/leave-form")}>Leave Form</button>
-              <button onClick={() => navigate("/leave-list")}>Leave List</button>
               <button onClick={() => navigate("/settings")}>Settings</button>
               <button onClick={handleLogout}>Logout</button>
             </div>

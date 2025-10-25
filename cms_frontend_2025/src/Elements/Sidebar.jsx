@@ -10,9 +10,10 @@ function Sidebar({ open, role, onClose }) {
   if (role === "ADMIN") {
     links = [
       { path: "/admin", label: "Admin Dashboard" },
-      { path: "/add-staff", label: "Add Staff" },
-      { path: "/staff-list", label: "Staff List" },
+      { path: "/admin/staff-form/:id?", label: "Add Staff" },
+      { path: "/admin/staff-list", label: "Staff List" },
       { path: "/leave-list", label: "Leave Requests" },
+      { path: "/admin/ambulance", label: "Ambulance Management" }, 
       { path: "/settings", label: "Settings" }
     ];
   } else if (role === "REC") {
