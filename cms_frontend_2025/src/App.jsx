@@ -339,14 +339,6 @@ function App() {
             </ProtectedRoute>
           } 
         />
-        <Route 
-          path="/manage-billing" 
-          element={
-            <ProtectedRoute role="REC">
-              <ManageBilling />
-            </ProtectedRoute>
-          } 
-        />
         {/* Billing Routes */}
             <Route 
               path="/manage-billing" 
