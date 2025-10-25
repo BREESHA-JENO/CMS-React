@@ -1,0 +1,247 @@
+/* Temp Patient Menu - WHITE CARDS (NOT PALE YELLOW!) with Header/Footer */
+
+.temp-patient-menu-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f0f2f5;
+}
+
+.temp-patient-menu-container {
+  flex: 1;
+  padding: 80px 20px 60px 20px;
+  overflow-y: auto;
+  background: #f0f2f5;
+}
+
+.temp-patient-menu-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Breadcrumb Navigation - Professional Style */
+.breadcrumb-nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 30px;
+  padding: 12px 0;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.breadcrumb-back {
+  background: transparent;
+  color: #003087;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.breadcrumb-back:hover {
+  background: rgba(0, 48, 135, 0.08);
+  color: #002060;
+}
+
+.breadcrumb-back i {
+  font-size: 0.85rem;
+}
+
+.breadcrumb-separator {
+  color: #6c757d;
+  font-size: 1rem;
+  font-weight: 300;
+}
+
+.breadcrumb-current {
+  color: #6c757d;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+/* Header */
+.temp-patient-menu-header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.temp-patient-menu-header h1 {
+  color: #003087;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 15px;
+}
+
+.temp-patient-menu-header p {
+  color: #6c757d;
+  font-size: 1.1rem;
+}
+
+/* Cards Grid */
+.temp-patient-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+  margin-top: 40px;
+}
+
+/* Individual Card - FORCED WHITE BACKGROUND */
+.temp-patient-card {
+  background: #ffffff !important; /* ✅ PURE WHITE - FORCED */
+  background-color: #ffffff !important; /* ✅ FORCED OVERRIDE */
+  border-radius: 15px;
+  padding: 40px 30px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  border-top: 5px solid;
+  border-left: 2px solid rgba(0, 0, 0, 0.05);
+}
+
+/* Remove any pseudo-element backgrounds */
+.temp-patient-card::before,
+.temp-patient-card::after {
+  display: none !important;
+}
+
+.temp-patient-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+  background: #ffffff !important; /* ✅ Stay white on hover */
+}
+
+/* Card Icon */
+.temp-patient-card-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  font-size: 2rem;
+  color: white;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
+}
+
+.temp-patient-card:hover .temp-patient-card-icon {
+  transform: scale(1.1) rotate(5deg);
+}
+
+/* Card Title */
+.temp-patient-card h3 {
+  color: #212529;
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Card Subtitle */
+.temp-patient-card p {
+  color: #6c757d;
+  font-size: 1rem;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Card Arrow */
+.temp-patient-card-arrow {
+  font-size: 2rem;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
+}
+
+.temp-patient-card:hover .temp-patient-card-arrow {
+  transform: translateX(10px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .temp-patient-menu-container {
+    padding: 70px 15px 50px 15px;
+  }
+
+  .breadcrumb-nav {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .breadcrumb-current {
+    font-size: 0.85rem;
+  }
+
+  .temp-patient-menu-header h1 {
+    font-size: 2rem;
+  }
+
+  .temp-patient-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .temp-patient-card {
+    padding: 30px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .temp-patient-menu-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .temp-patient-card-icon {
+    width: 70px;
+    height: 70px;
+    font-size: 1.8rem;
+  }
+}
+
+/* Dark Mode */
+.temp-patient-menu-wrapper.dark {
+  background: #1a2533;
+}
+
+.temp-patient-menu-wrapper.dark .temp-patient-menu-container {
+  background: #1a2533;
+}
+
+.temp-patient-menu-wrapper.dark .temp-patient-menu-header h1 {
+  color: #ecf0f1;
+}
+
+.temp-patient-menu-wrapper.dark .temp-patient-menu-header p {
+  color: #a9b5c4;
+}
+
+.temp-patient-menu-wrapper.dark .temp-patient-card {
+  background: #2c3e50 !important; /* Dark mode: darker cards */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.temp-patient-menu-wrapper.dark .temp-patient-card:hover {
+  background: #34495e !important; /* Slightly lighter on hover in dark mode */
+}
+
+.temp-patient-menu-wrapper.dark .temp-patient-card h3 {
+  color: #ecf0f1;
+}
+
+.temp-patient-menu-wrapper.dark .temp-patient-card p {
+  color: #bdc3c7;
+}

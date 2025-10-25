@@ -1,0 +1,189 @@
+/* A&E Landing Page - Matching Appointments Screenshot Style */
+
+.ae-landing-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f5f7fa;
+}
+
+.ae-landing-container {
+  flex: 1;
+  padding: 80px 20px 60px 20px; /* Top padding for header, bottom for footer */
+  overflow-y: auto;
+}
+
+.ae-landing-content {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Header Section */
+.ae-landing-header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.ae-landing-header h1 {
+  color: #003087;
+  font-size: 2.8rem;
+  font-weight: 700;
+  margin-bottom: 15px;
+}
+
+.ae-landing-header p {
+  color: #5a6c7d;
+  font-size: 1.2rem;
+  font-weight: 400;
+}
+
+/* Cards Grid - 3 Columns */
+.ae-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Individual Card - PURE WHITE */
+.ae-card {
+  background: #ffffff; /* Pure white background */
+  border-radius: 12px;
+  border-top: 5px solid;
+  padding: 40px 30px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.ae-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* Icon Circle */
+.ae-card-icon {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 25px;
+  font-size: 2.8rem;
+  color: white;
+}
+
+.ae-card-icon i {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+/* Card Title */
+.ae-card-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #003087;
+  margin-bottom: 12px;
+}
+
+/* Card Subtitle */
+.ae-card-subtitle {
+  font-size: 1rem;
+  color: #6c757d;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+/* Arrow Icon */
+.ae-card-arrow {
+  position: absolute;
+  bottom: 20px;
+  right: 25px;
+  font-size: 1.5rem;
+  color: #003087;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.ae-card:hover .ae-card-arrow {
+  opacity: 1;
+  right: 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .ae-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 800px;
+  }
+}
+
+@media (max-width: 768px) {
+  .ae-landing-container {
+    padding: 70px 15px 50px 15px;
+  }
+
+  .ae-landing-header h1 {
+    font-size: 2rem;
+  }
+
+  .ae-landing-header p {
+    font-size: 1rem;
+  }
+
+  .ae-cards-grid {
+    grid-template-columns: 1fr;
+    max-width: 500px;
+    gap: 20px;
+  }
+
+  .ae-card {
+    min-height: 280px;
+    padding: 30px 20px;
+  }
+
+  .ae-card-icon {
+    width: 80px;
+    height: 80px;
+    font-size: 2.2rem;
+  }
+
+  .ae-card-title {
+    font-size: 1.4rem;
+  }
+}
+
+/* Dark Mode Support */
+.ae-landing-wrapper.dark {
+  background: #1a2533;
+}
+
+.ae-landing-wrapper.dark .ae-landing-container {
+  background: #1a2533;
+}
+
+.ae-landing-wrapper.dark .ae-landing-header h1 {
+  color: #fbf34d;
+}
+
+.ae-landing-wrapper.dark .ae-landing-header p {
+  color: #a9b5c4;
+}
+
+.ae-landing-wrapper.dark .ae-card {
+  background: #ffffff; /* Keep cards white even in dark mode */
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+}
+
+.ae-landing-wrapper.dark .ae-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
