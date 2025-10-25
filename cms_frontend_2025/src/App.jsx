@@ -19,14 +19,6 @@ import SpecializationsDashboard from "./Pages/Admin/SpecializationDashboard";
 import SpecializationTable from "./components/Admin/SpecializationTable";
 import LoginContainer from "./components/Login/LoginContainer";
 import ProtectedRoute from "./Utils/ProtectedRoute";
-// Module dashboards (protected)
-// import AdminDashboard from "./modules/admin/AdminDashboard";
-// import ReceptionistDashboard from "./modules/receptionist/ReceptionistDashboard";
-// import DoctorDashboard from "./modules/doctor/DoctorDashboard";
-// import LabDashboard from "./modules/labtechnician/LabDashboard";
-// import PharmacistDashboard from "./modules/pharmacist/PharmacistDashboard";
-
-//reception imports (patient,billing,appointments)
 import AdminDashboard from "./Pages/Admin/Admin_dashboard";
 import SpecializationSearch from "./components/Admin/SpecializationSearch";
 import StaffSearch from "./components/Admin/StaffSearch";
@@ -89,18 +81,6 @@ import ViewTreatment from './components/AE/Treatment/ListTreatments';
 
 import SearchAECase from './components/AE/SearchAECase/SearchAECase';
 import CaseHistory from './components/AE/CaseHistory/CaseHistory';
-// Auth
-// import Login from "./auth/Login";
-
-// ProtectedRoute Component
-// const ProtectedRoute = ({ children, allowedId }) => {
-//   const user = JSON.parse(localStorage.getItem("user")); // e.g., { id: 1, name: "Admin" }
-
-//   if (!user) return <Navigate to="/login" replace />; // Not logged in
-//   if (allowedId && user.id !== allowedId) return <Navigate to="/login" replace />; // ID mismatch
-
-//   return children;
-// };
 
 function App() {
   const [darkMode, setDarkMode] = useState(
@@ -240,7 +220,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-        {/* patient routes */}
         <Route 
             path="/manage-patients" 
             element={
@@ -298,7 +277,6 @@ function App() {
             </ProtectedRoute>
           } 
         />
-        {/* appointment route */}
         <Route 
           path="/manage-appointments" 
           element={
@@ -379,222 +357,182 @@ function App() {
             {/* A&E routes */}
             {/* ========== A&E MODULE ROUTES ========== */}
 
-{/* A&E Landing */}
-<Route 
-  path="/ae-module" 
-  element={
-    <ProtectedRoute role="REC">
-      <AELanding />
-    </ProtectedRoute>
-  } 
-/>
+            {/* A&E Landing */}
+            <Route 
+              path="/ae-module" 
+              element={
+                <ProtectedRoute role="REC">
+                  <AELanding />
+                </ProtectedRoute>
+              } 
+            />
 
-{/* ========== TEMPORARY PATIENT ROUTES ========== */}
-<Route 
-  path="/ae-module/temp-patient-menu" 
-  element={
-    <ProtectedRoute role="REC">
-      <TempPatientMenu />
-    </ProtectedRoute>
-  } 
-/>
+            {/* ========== TEMPORARY PATIENT ROUTES ========== */}
+            <Route 
+              path="/ae-module/temp-patient-menu" 
+              element={
+                <ProtectedRoute role="REC">
+                  <TempPatientMenu />
+                </ProtectedRoute>
+              } 
+            />
 
-<Route 
-  path="/ae-module/add-temp-patient" 
-  element={
-    <ProtectedRoute role="REC">
-      <AddTempPatient />
-    </ProtectedRoute>
-  } 
-/>
+            <Route 
+              path="/ae-module/add-temp-patient" 
+              element={
+                <ProtectedRoute role="REC">
+                  <AddTempPatient />
+                </ProtectedRoute>
+              } 
+            />
 
-<Route 
-  path="/ae-module/list-temp-patients" 
-  element={
-    <ProtectedRoute role="REC">
-      <ListTempPatients />
-    </ProtectedRoute>
-  } 
-/>
+            <Route 
+              path="/ae-module/list-temp-patients" 
+              element={
+                <ProtectedRoute role="REC">
+                  <ListTempPatients />
+                </ProtectedRoute>
+              } 
+            />
 
-<Route 
-  path="/ae-module/search-temp-patient" 
-  element={
-    <ProtectedRoute role="REC">
-      <SearchTempPatient />
-    </ProtectedRoute>
-  } 
-/>
+            <Route 
+              path="/ae-module/search-temp-patient" 
+              element={
+                <ProtectedRoute role="REC">
+                  <SearchTempPatient />
+                </ProtectedRoute>
+              } 
+            />
 
-<Route 
-  path="/ae-module/view-temp-patient/:id" 
-  element={
-    <ProtectedRoute role="REC">
-      <ViewTempPatient />
-    </ProtectedRoute>
-  } 
-/>
+            <Route 
+              path="/ae-module/view-temp-patient/:id" 
+              element={
+                <ProtectedRoute role="REC">
+                  <ViewTempPatient />
+                </ProtectedRoute>
+              } 
+            />
 
-<Route 
-  path="/ae-module/update-temp-patient/:id" 
-  element={
-    <ProtectedRoute role="REC">
-      <UpdateTempPatient />
-    </ProtectedRoute>
-  } 
-/>
+            <Route 
+              path="/ae-module/update-temp-patient/:id" 
+              element={
+                <ProtectedRoute role="REC">
+                  <UpdateTempPatient />
+                </ProtectedRoute>
+              } 
+            />
 
-<Route 
-  path="/ae-module/convert-to-permanent/:id" 
-  element={
-    <ProtectedRoute role="REC">
-      <ConvertToPermanent />
-    </ProtectedRoute>
-  } 
-/>
+            <Route 
+              path="/ae-module/convert-to-permanent/:id" 
+              element={
+                <ProtectedRoute role="REC">
+                  <ConvertToPermanent />
+                </ProtectedRoute>
+              } 
+            />
 
-{/* ========== A&E CASE ROUTES ========== */}
-<Route 
-  path="/ae-module/ae-case-menu" 
-  element={
-    <ProtectedRoute role="REC">
-      <AECaseMenu />
-    </ProtectedRoute>
-  } 
-/>
+            {/* ========== A&E CASE ROUTES ========== */}
+            <Route 
+              path="/ae-module/ae-case-menu" 
+              element={
+                <ProtectedRoute role="REC">
+                  <AECaseMenu />
+                </ProtectedRoute>
+              } 
+            />
 
-<Route 
-  path="/ae-module/add-ae-case" 
-  element={
-    <ProtectedRoute role="REC">
-      <AddAECase />
-    </ProtectedRoute>
-  } 
-/>
+            <Route 
+              path="/ae-module/add-ae-case" 
+              element={
+                <ProtectedRoute role="REC">
+                  <AddAECase />
+                </ProtectedRoute>
+              } 
+            />
 
-<Route 
-  path="/ae-module/list-ae-cases" 
-  element={
-    <ProtectedRoute role="REC">
-      <ListAECases />
-    </ProtectedRoute>
-  } 
-/>
+            <Route 
+              path="/ae-module/list-ae-cases" 
+              element={
+                <ProtectedRoute role="REC">
+                  <ListAECases />
+                </ProtectedRoute>
+              } 
+            />
 
-<Route 
-  path="/ae-module/view-ae-case/:id" 
-  element={
-    <ProtectedRoute role="REC">
-      <ViewAECase />
-    </ProtectedRoute>
-  } 
-/>
+            <Route 
+              path="/ae-module/view-ae-case/:id" 
+              element={
+                <ProtectedRoute role="REC">
+                  <ViewAECase />
+                </ProtectedRoute>
+              } 
+            />
 
-<Route 
-  path="/ae-module/update-ae-case/:id" 
-  element={
-    <ProtectedRoute role="REC">
-      <UpdateAECase />
-    </ProtectedRoute>
-  } 
-/>
+            <Route 
+              path="/ae-module/update-ae-case/:id" 
+              element={
+                <ProtectedRoute role="REC">
+                  <UpdateAECase />
+                </ProtectedRoute>
+              } 
+            />
 
-{/* ========== TREATMENT ROUTES ========== */}
-<Route 
-  path="/ae-module/treatment-menu" 
-  element={
-    <ProtectedRoute role="REC">
-      <TreatmentMenu />
-    </ProtectedRoute>
-  } 
-/>
+            {/* ========== TREATMENT ROUTES ========== */}
+            <Route 
+              path="/ae-module/treatment-menu" 
+              element={
+                <ProtectedRoute role="REC">
+                  <TreatmentMenu />
+                </ProtectedRoute>
+              } 
+            />
 
-<Route 
-  path="/ae-module/add-treatment/:caseId" 
-  element={
-    <ProtectedRoute role="REC">
-      <AddTreatment />
-    </ProtectedRoute>
-  } 
-/>
+            <Route 
+              path="/ae-module/add-treatment/:caseId" 
+              element={
+                <ProtectedRoute role="REC">
+                  <AddTreatment />
+                </ProtectedRoute>
+              } 
+            />
 
-<Route 
-  path="/ae-module/case-treatments/:caseId" 
-  element={
-    <ProtectedRoute role="REC">
-      <ListTreatments />
-    </ProtectedRoute>
-  } 
-/>
+            <Route 
+              path="/ae-module/case-treatments/:caseId" 
+              element={
+                <ProtectedRoute role="REC">
+                  <ListTreatments />
+                </ProtectedRoute>
+              } 
+            />
 
-<Route 
-  path="/ae-module/view-treatment/:id" 
-  element={
-    <ProtectedRoute role="REC">
-      <ViewTreatment />
-    </ProtectedRoute>
-  } 
-/>
-<Route 
-  path="/ae-module/search-case" 
-  element={
-    <ProtectedRoute role="REC">
-      <SearchAECase  />
-    </ProtectedRoute>
-  } 
-/>
+            <Route 
+              path="/ae-module/view-treatment/:id" 
+              element={
+                <ProtectedRoute role="REC">
+                  <ViewTreatment />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/ae-module/search-case" 
+              element={
+                <ProtectedRoute role="REC">
+                  <SearchAECase  />
+                </ProtectedRoute>
+              } 
+            />
 
-<Route 
-  path="/ae-module/case-history" 
-  element={
-    <ProtectedRoute role="REC">
-      <CaseHistory  />
-    </ProtectedRoute>
-  } 
-/>
+            <Route 
+              path="/ae-module/case-history" 
+              element={
+                <ProtectedRoute role="REC">
+                  <CaseHistory  />
+                </ProtectedRoute>
+              } 
+            />
 
-
-
-       
-{/* 
-<Route 
-  path="/ae-module/search-temp-patient" 
-  element={
-    <ProtectedRoute role="REC">
-      <SearchTempPatient />
-    </ProtectedRoute>
-  } 
-/>
-
-<Route 
-  path="/ae-module/update-temp-patient" 
-  element={
-    <ProtectedRoute role="REC">
-      <UpdateTempPatient />
-    </ProtectedRoute>
-  } 
-/>
-
-<Route 
-  path="/ae-module/update-temp-patient/:id" 
-  element={
-    <ProtectedRoute role="REC">
-      <UpdateTempPatient />
-    </ProtectedRoute>
-  } 
-/>
-
-<Route 
-  path="/ae-module/convert-to-permanent/:id" 
-  element={
-    <ProtectedRoute role="REC">
-      <ConvertToPermanent />
-    </ProtectedRoute>
-  } 
-/> */}
-
-        {/* <Route
-          path="/doctor"
+        <Route
+          path="/ambulance"
           element={
             <ProtectedRoute allowedRoles={["AMB"]}>
               <DriverAmbulanceDashboard />
