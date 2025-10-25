@@ -1,0 +1,213 @@
+/* src/pages/Receptionist/ManageBilling.css */
+
+.manage-billing-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f5f7fa;
+}
+
+.manage-billing-container.dark {
+  background: #1a2332;
+}
+
+.manage-billing-content {
+  flex: 1;
+  padding: 80px 2rem 80px 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Page Header */
+.page-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.page-header h1 {
+  color: #003087;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.dark .page-header h1 {
+  color: #fbf34d;
+}
+
+.page-header p {
+  color: #5a6c7d;
+  font-size: 1.1rem;
+}
+
+.dark .page-header p {
+  color: #b8c5d6;
+}
+
+/* Action Cards Grid */
+.action-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.action-card {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  border-top: 4px solid transparent;
+}
+
+.dark .action-card {
+  background: #24304a;
+}
+
+.action-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.card-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+  font-size: 2rem;
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.action-card:hover .card-icon {
+  transform: scale(1.1) rotate(5deg);
+}
+
+.action-card h3 {
+  color: #003087;
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.dark .action-card h3 {
+  color: #fbf34d;
+}
+
+.action-card p {
+  color: #5a6c7d;
+  font-size: 1rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.dark .action-card p {
+  color: #b8c5d6;
+}
+
+.card-arrow {
+  position: absolute;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  font-size: 1.5rem;
+  color: #003087;
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: all 0.3s ease;
+}
+
+.dark .card-arrow {
+  color: #fbf34d;
+}
+
+.action-card:hover .card-arrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Individual Card Styles */
+.create-card {
+  border-top-color: #28a745;
+}
+
+.create-card .card-icon {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+}
+
+.list-card {
+  border-top-color: #003087;
+}
+
+.list-card .card-icon {
+  background: linear-gradient(135deg, #003087 0%, #0052cc 100%);
+}
+
+.search-card {
+  border-top-color: #17a2b8;
+}
+
+.search-card .card-icon {
+  background: linear-gradient(135deg, #17a2b8 0%, #20c997 100%);
+}
+
+.payment-card {
+  border-top-color: #ffc107;
+}
+
+.payment-card .card-icon {
+  background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+  .action-cards {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .manage-billing-content {
+    padding: 80px 1rem 80px 1rem;
+  }
+
+  .page-header h1 {
+    font-size: 2rem;
+  }
+
+  .page-header p {
+    font-size: 1rem;
+  }
+
+  .action-cards {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .action-card {
+    padding: 1.5rem;
+  }
+
+  .card-icon {
+    width: 70px;
+    height: 70px;
+    font-size: 1.8rem;
+  }
+
+  .action-card h3 {
+    font-size: 1.2rem;
+  }
+
+  .action-card p {
+    font-size: 0.95rem;
+  }
+}
