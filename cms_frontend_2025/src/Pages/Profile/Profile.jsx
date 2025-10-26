@@ -9,11 +9,11 @@ function Profile() {
       <h2>Profile Information</h2>
       <div className="profile-image-container">
         {user?.profile_image ? (
-          <img
+          <center><img
             src={user.profile_image}
             alt={`${user.username}'s profile`}
             className="profile-image"
-          />
+          /></center>
         ) : (
           <div className="profile-image-placeholder">
             {/* You can also use an icon or initials here */}

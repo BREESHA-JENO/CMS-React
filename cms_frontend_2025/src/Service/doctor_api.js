@@ -12,8 +12,9 @@ const apiClient = axios.create({
 });
 
 // Add auth token to requests
+// Add auth token to requests
 apiClient.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token") || localStorage.getItem("accessToken");
+  const token = localStorage.getItem("accessToken"); // ONLY use accessToken
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -21,6 +22,7 @@ apiClient.interceptors.request.use((config) => {
 }, (error) => {
   return Promise.reject(error);
 });
+
 
 // Helper function to convert HTTP errors to user-friendly messages
 const getUserFriendlyError = (error) => {
