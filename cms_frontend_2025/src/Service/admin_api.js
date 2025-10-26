@@ -20,7 +20,9 @@ export const changePassword = (data) => api.post("/api/admin/change-password/", 
 export const getMyStaffProfile = () => api.get("/api/admin/staff/me/");
 
 // NOTIFICATIONS
-export const getNotifications = () => api.get("/api/admin/notifications/");
+export const getNotifications = () =>
+  api.get(`/api/admin/notifications/?_=${Date.now()}`);
+
 export const markAllRead = () => api.post("/api/admin/notifications/mark_all_read/");
 
 // SPECIALIZATIONS

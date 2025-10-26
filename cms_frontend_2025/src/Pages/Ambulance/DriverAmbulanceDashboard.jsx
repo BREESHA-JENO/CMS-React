@@ -1,32 +1,45 @@
-// src/Pages/Ambulance/DriverAmbulanceDashboard.jsx
 import React, { useEffect, useState } from "react";
 import Header1 from "../../Elements/Header1";
 import Footer1 from "../../Elements/Footer1";
 import Sidebar from "../../Elements/Sidebar";
-import { getAmbulanceRequests, updateAmbulanceRequestStatus } from "../../Service/amb_api";
+import { getAmbulanceRequests, getAmbulances, updateAmbulanceRequestStatus } from "../../Service/amb_api";
 import "./DriverAmbulanceDashboard.css";
 
 const DriverAmbulanceDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   const [requests, setRequests] = useState([]);
+  const [ambulances, setAmbulances] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const user = JSON.parse(localStorage.getItem("user")) || {};
+  const driverStaffId = user.staff_id || user.id;
 
   useEffect(() => {
-    const fetchRequests = async () => {
-      try {
-        const res = await getAmbulanceRequests();
-        setRequests(res.data);
-      } catch (err) {
-        console.error("Failed to load ambulance requests", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchRequests();
-  }, []);
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const [reqRes, ambRes] = await Promise.all([
+        getAmbulanceRequests(),
+        getAmbulances()
+      ]);
+      // Always compare as string for robustness
+      const driverId = String(driverStaffId);
+      const driverRequests = reqRes.data.filter(
+        r => r.assigned_driver && String(r.assigned_driver.id) === driverId
+      );
+      setRequests(driverRequests);
+      setAmbulances(ambRes.data);
+    } catch (err) {
+      console.error("Failed to load ambulance requests", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+  fetchData();
+}, [driverStaffId]);
+
+
 
   const handleComplete = async (requestId) => {
     try {
@@ -42,6 +55,14 @@ const DriverAmbulanceDashboard = () => {
     }
   };
 
+  function renderAmbulanceInfo(r) {
+    const amb = r.assigned_ambulance;
+    if (amb && typeof amb === "object" && amb.vehicle_no) {
+      return amb.vehicle_no;
+    }
+    return "-";
+  }
+
   return (
     <div className={`dashboard-container${darkMode ? " dark" : ""}`}>
       <Header1
@@ -49,15 +70,12 @@ const DriverAmbulanceDashboard = () => {
         darkMode={darkMode}
         setDarkMode={setDarkMode}
       />
-
       <Sidebar open={sidebarOpen} role={user?.role} onClose={() => setSidebarOpen(false)} />
-
       <div className="dashboard-content">
         <div className="welcome-section">
           <h1>Welcome Driver {user?.username || ""}</h1>
           <p>View and manage your assigned ambulance requests</p>
         </div>
-
         {loading ? (
           <div className="loading-spinner">
             <div className="spinner"></div>
@@ -70,6 +88,7 @@ const DriverAmbulanceDashboard = () => {
                 <th>ID</th>
                 <th>Pickup Location</th>
                 <th>Destination</th>
+                <th>Ambulance No</th>
                 <th>Status</th>
                 <th>Action</th>
               </tr>
@@ -80,6 +99,7 @@ const DriverAmbulanceDashboard = () => {
                   <td>{req.request_id}</td>
                   <td>{req.pickup_location}</td>
                   <td>{req.destination}</td>
+                  <td>{renderAmbulanceInfo(req)}</td>
                   <td>{req.status}</td>
                   <td>
                     {req.status === "Assigned" ? (
@@ -99,7 +119,6 @@ const DriverAmbulanceDashboard = () => {
           </table>
         )}
       </div>
-
       <Footer1 />
     </div>
   );

@@ -1,28 +1,32 @@
 import React, { useEffect, useState } from "react";
-import { getAmbulanceRequests, updateAmbulanceRequestStatus } from "../../Service/amb_api";
+import { getAmbulanceRequests, getAmbulances, updateAmbulanceRequestStatus } from "../../Service/amb_api";
 import "../../Pages/Receptionist/Receptionist_Dashboard.css";
 
 const AdminAmbulanceRequests = () => {
   const [requests, setRequests] = useState([]);
+  const [ambulances, setAmbulances] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchRequests() {
+    async function fetchAllData() {
       setLoading(true);
       try {
-        const res = await getAmbulanceRequests();
-        setRequests(res.data);
+        const [requestsRes, ambulancesRes] = await Promise.all([
+          getAmbulanceRequests(),
+          getAmbulances()
+        ]);
+        setRequests(requestsRes.data);
+        setAmbulances(ambulancesRes.data);
       } finally {
         setLoading(false);
       }
     }
-    fetchRequests();
+    fetchAllData();
   }, []);
 
   const handleStatusChange = async (id, status) => {
     try {
       await updateAmbulanceRequestStatus(id, { status });
-      // Refresh
       const res = await getAmbulanceRequests();
       setRequests(res.data);
       alert(`Status updated to ${status}`);
@@ -30,6 +34,19 @@ const AdminAmbulanceRequests = () => {
       alert("Failed to update status");
     }
   };
+
+  function renderAmbulanceInfo(r) {
+    const amb = r.assigned_ambulance;
+    if (amb && typeof amb === "object") {
+      const v = amb.vehicle_no;
+      const d = amb.driver_name;
+      if (v && d) return `${v} — ${d}`;
+      if (v) return v;
+      if (d) return d;
+      return "Unassigned";
+    }
+    return "Unassigned";
+  }
 
   return (
     <div className="dashboard-content">
@@ -54,7 +71,7 @@ const AdminAmbulanceRequests = () => {
                 <td>{r.request_id}</td>
                 <td>{r.pickup_location}</td>
                 <td>{r.destination}</td>
-                <td>{r.assigned_ambulance ? r.assigned_ambulance.vehicle_no : "Unassigned"}</td>
+                <td>{renderAmbulanceInfo(r)}</td>
                 <td>{r.status}</td>
                 <td>
                   <select

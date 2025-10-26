@@ -1,12 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
 import { FaBars, FaUserCircle, FaBell, FaMoon, FaSun } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { getNotifications, markAllRead } from "../Service/admin_api"; // Adjust path as needed
+import { getNotifications, markAllRead } from "../Service/admin_api";
 import "./Header1.css";
 
 const Header1 = ({ onSidebarToggle, darkMode, setDarkMode }) => {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const notifDropdownRef = useRef(null);
   const navigate = useNavigate();
   const [notifications, setNotifications] = useState([]);
   const [notifOpen, setNotifOpen] = useState(false);
@@ -14,22 +15,11 @@ const Header1 = ({ onSidebarToggle, darkMode, setDarkMode }) => {
   // Get user from localStorage
   const user = JSON.parse(localStorage.getItem("user"));
 
-  // Close dropdown and notif on outside click
-  useEffect(() => {
-    function handleClick(e) {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-        setOpen(false);
-        setNotifOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
-  }, []);
-
   // Fetch notifications from backend
   const fetchNotifications = async () => {
     try {
       const response = await getNotifications();
+      console.log('Latest notifications:', response.data);
       if (Array.isArray(response.data)) {
         setNotifications(response.data);
       } else if (response.data.results) {
@@ -43,19 +33,47 @@ const Header1 = ({ onSidebarToggle, darkMode, setDarkMode }) => {
     }
   };
 
+  useEffect(() => {
+    fetchNotifications();
+  }, []);
+
+  // Close dropdown and notif on outside click
+  useEffect(() => {
+    function handleClick(e) {
+      // Close profile dropdown if clicked outside
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target)
+      ) {
+        setOpen(false);
+      }
+      // Close notifications dropdown if clicked outside (also if not bell)
+      if (
+        notifDropdownRef.current &&
+        !notifDropdownRef.current.contains(e.target) &&
+        // not clicked on bell icon either
+        !(e.target.closest(".notify-btn"))
+      ) {
+        setNotifOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
   // Toggle notifications dropdown
   const toggleNotifications = () => {
     if (!notifOpen) {
       fetchNotifications();
     }
-    setNotifOpen(!notifOpen);
+    setNotifOpen((prev) => !prev);
   };
 
-  // Mark all notifications as read
+  // Mark all notifications as read - update UI after API succeeds
   const handleMarkAllRead = async () => {
     try {
       await markAllRead();
-      fetchNotifications();
+      await fetchNotifications();
     } catch (error) {
       console.error("Failed to mark notifications as read", error);
     }
@@ -95,7 +113,8 @@ const Header1 = ({ onSidebarToggle, darkMode, setDarkMode }) => {
         >
           {darkMode ? <FaSun /> : <FaMoon />}
         </button>
-        <div className="notification">
+        {/* Notifications */}
+        <div className="notification" ref={notifDropdownRef}>
           <button
             className="notify-btn"
             title="Notifications"
@@ -106,9 +125,8 @@ const Header1 = ({ onSidebarToggle, darkMode, setDarkMode }) => {
               <span className="notify-badge">{unreadCount}</span>
             )}
           </button>
-
           {notifOpen && (
-            <div className="notification-dropdown">
+            <div className={`notification-dropdown${darkMode ? " dark" : ""}`}>
               <button onClick={handleMarkAllRead} className="mark-read-btn">
                 Mark all as read
               </button>
@@ -133,7 +151,7 @@ const Header1 = ({ onSidebarToggle, darkMode, setDarkMode }) => {
             </div>
           )}
         </div>
-
+        {/* Profile/user */}
         <div className="user-info" ref={dropdownRef}>
           <button
             className="profile-btn"

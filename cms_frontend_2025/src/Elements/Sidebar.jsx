@@ -27,6 +27,7 @@ function Sidebar({ open, role, onClose }) {
       { path: "/manage-patients", label: "Patients" },
       { path: "/manage-appointments", label: "Appointments" },
       { path: "/manage-billing", label: "Billing" },
+      { path: "/receptionist/ambulance", label: "Ambulance Requests" },
       { path: "/ae-module", label: "Accident & Emergency" }
     ];
   }

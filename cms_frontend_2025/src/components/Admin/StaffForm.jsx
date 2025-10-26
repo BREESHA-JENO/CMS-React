@@ -233,7 +233,7 @@ const StaffForm = () => {
       }
     } catch (error) {
       console.error("Backend error:", error.response?.data);
-      alert("Failed to save staff");
+      alert(`Failed to save staff: ${JSON.stringify(error.response?.data)}`);
     } finally {
       setIsSaving(false);
     }
@@ -327,6 +327,7 @@ const StaffForm = () => {
         <label>
           Role:
           <select name="role" value={formData.role} onChange={handleRoleChange} required>
+            <option value="">Select Role</option>
             <option value="ADMIN">Admin</option>
             <option value="REC">Receptionist</option>
             <option value="DOC">Doctor</option>
