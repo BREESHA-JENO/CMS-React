@@ -30,6 +30,10 @@ function Sidebar({ open, role, onClose }) {
       { path: "/receptionist/ambulance", label: "Ambulance Requests" },
       { path: "/ae-module", label: "Accident & Emergency" }
     ];
+  } else if (role === "AMB"){
+    links=[
+      {path: "/ambulance", label: "Driver Dashboard"}
+    ]
   }
 
   return (

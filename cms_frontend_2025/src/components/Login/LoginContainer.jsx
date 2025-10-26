@@ -13,7 +13,7 @@ function LoginContainer() {
   const [showForgot, setShowForgot] = useState(false);
   const [fpEmail, setFpEmail] = useState("");
   const [fpMessage, setFpMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(false); // Add loading state
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -41,19 +41,25 @@ function LoginContainer() {
 
       localStorage.setItem("accessToken", data.access);
       localStorage.setItem("refreshToken", data.refresh);
-      localStorage.setItem("user", JSON.stringify(data.user));
 
-      // Fetch only the current user's staff profile
+      // --- Key session logic begins here ---
+      // Fetch staff profile to get staff_id for this login
       try {
         const myStaffRes = await getMyStaffProfile();
         const staff = myStaffRes.data;
-        if (staff && staff.profile_image) {
-          const userWithPic = { ...data.user, profile_image: staff.profile_image };
-          localStorage.setItem("user", JSON.stringify(userWithPic));
-        }
+        // Build session user object with staff_id
+        const userSession = {
+          ...data.user,
+          staff_id: staff.id,
+          profile_image: staff.profile_image || "",
+          staff_profile: staff,
+        };
+        localStorage.setItem("user", JSON.stringify(userSession));
       } catch (e) {
-        // tolerate missing/failure
+        // If profile fetch fails, fallback to basic user info
+        localStorage.setItem("user", JSON.stringify(data.user));
       }
+      // --- Key session logic ends here ---
 
       setTimeout(() => {
         const role = data.user.role;
@@ -69,15 +75,15 @@ function LoginContainer() {
       if (error.response) {
         const status = error.response.status;
         const errorData = error.response.data;
-        
-        // Check for blocked account (403 Forbidden)
+
         if (status === 403 && errorData.error) {
           setPasswordError(errorData.error);
-        } 
-        // Check for other errors
-        else {
+        } else {
           const msg = errorData.error || errorData.detail || "Login failed";
-          if (msg.toLowerCase().includes("username") || msg.toLowerCase().includes("email")) {
+          if (
+            msg.toLowerCase().includes("username") ||
+            msg.toLowerCase().includes("email")
+          ) {
             setUsernameError(msg);
           } else {
             setPasswordError(msg);
