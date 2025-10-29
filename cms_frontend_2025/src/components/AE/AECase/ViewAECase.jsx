@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import api from '../../../Utils/axiosConfig';
+import { getAECase } from '../../../Service/ae_api';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './ViewAECase.css';
 import Header1 from '../../../Elements/Header1';
@@ -27,8 +27,8 @@ const ViewAECase = () => {
 
   const fetchCase = async () => {
     try {
-      const response = await api.get(`/ae/case/${id}/`);
-      setCaseData(response.data);
+      const caseData = await getAECase(id);
+      setCaseData(caseData);
       setLoading(false);
     } catch (err) {
       console.error('Error:', err);

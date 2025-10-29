@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import api from '../../../Utils/axiosConfig';
+import { getTreatment } from '../../../Service/ae_api';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './ViewTreatment.css';
 import Header1 from '../../../Elements/Header1';
@@ -26,16 +26,16 @@ const ViewTreatment = () => {
   }, [id]);
 
   const fetchTreatment = async () => {
-    try {
-      const response = await api.get(`/ae/treatment/${id}/`);
-      setTreatment(response.data);
-      setLoading(false);
-    } catch (err) {
-      console.error('Error:', err);
-      setError('Failed to load treatment details');
-      setLoading(false);
-    }
-  };
+  try {
+    const response = await getTreatment(id); // Uses aeapi.js wrapper
+    setTreatment(response.data);
+    setLoading(false);
+  } catch (err) {
+    setError('Failed to load treatment details');
+    setLoading(false);
+  }
+};
+
 
   const formatDateTime = (dateString) => {
     const date = new Date(dateString);

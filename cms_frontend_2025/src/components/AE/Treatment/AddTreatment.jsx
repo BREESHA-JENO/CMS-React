@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import api from '../../../Utils/axiosConfig';
+import { createTreatment, getAECase } from '../../../Service/ae_api';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './AddTreatment.css';
 import Header1 from '../../../Elements/Header1';
@@ -41,7 +41,7 @@ const AddTreatment = () => {
     setDataLoading(true);
     try {
       const [caseRes, staffRes] = await Promise.all([
-        api.get(`/ae/case/${caseId}/`),
+        getAECase(caseId),
         api.get('/admin/staff/')
       ]);
 
@@ -92,7 +92,7 @@ const AddTreatment = () => {
         ae_case: caseId
       };
 
-      const response = await api.post('/ae/treatment/create/', payload);
+      const response = await createTreatment(payload);
 
       setSuccessMessage(response.data.message);
       

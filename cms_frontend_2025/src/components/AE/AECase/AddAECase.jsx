@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../../../Utils/axiosConfig';
+import { createAECase, listTempPatients } from '../../../Service/ae_api';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './AddAECase.css';
 import Header1 from '../../../Elements/Header1';
@@ -30,69 +30,48 @@ const AddAECase = () => {
   const [tempPatients, setTempPatients] = useState([]);
   const [ambulances, setAmbulances] = useState([]);
   const [doctors, setDoctors] = useState([]);
-  
+
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [dataLoading, setDataLoading] = useState(true);
   const [successMessage, setSuccessMessage] = useState('');
 
-  // Load dropdown data
+  // Load dropdown data on mount
   useEffect(() => {
     loadDropdownData();
   }, []);
 
   const loadDropdownData = async () => {
     setDataLoading(true);
-    
     try {
       const patientPromises = [];
-      
-      // ✅ CORRECTED: Load permanent patients from receptionist API
+
+      // Fetch permanent patients (axios kept until service added)
       patientPromises.push(
         api.get('/receptionist/patients/')
-          .then(res => {
-            console.log('✅ Loaded patients:', res.data.length);
-            setPatients(res.data || []);
-          })
-          .catch(err => {
-            console.warn('⚠️ Cannot load patients:', err.response?.status);
-            setPatients([]);
-          })
+          .then(res => setPatients(res.data || []))
+          .catch(() => setPatients([]))
       );
 
-      // ✅ CORRECTED: Load temporary patients from A&E API
+      // Fetch temporary patients using service function
       patientPromises.push(
-        api.get('/ae/temp-patient/')
-          .then(res => {
-            console.log('✅ Loaded temp patients:', res.data.length);
-            setTempPatients(res.data || []);
-          })
-          .catch(err => {
-            console.warn('⚠️ Cannot load temp patients:', err.response?.status);
-            setTempPatients([]);
-          })
+        listTempPatients()
+          .then(res => setTempPatients(res.data || []))
+          .catch(() => setTempPatients([]))
       );
 
-      // ✅ CORRECTED: Load doctors from receptionist public endpoint
+      // Fetch doctors (axios kept until service added)
       patientPromises.push(
         api.get('/receptionist/doctors-list/')
-          .then(res => {
-            console.log('✅ Loaded doctors:', res.data.length);
-            setDoctors(res.data || []);
-          })
-          .catch(err => {
-            console.warn('⚠️ Cannot load doctors:', err.response?.status);
-            setDoctors([]);
-          })
+          .then(res => setDoctors(res.data || []))
+          .catch(() => setDoctors([]))
       );
 
-      // ✅ Ambulances - skip for now (endpoint doesn't exist yet)
+      // Ambulance API not available yet
       console.warn('⚠️ Ambulance module not implemented yet');
       setAmbulances([]);
 
-      // Wait for all requests to complete
       await Promise.all(patientPromises);
-
     } catch (error) {
       console.error('❌ Error loading dropdown data:', error);
     } finally {
@@ -102,20 +81,14 @@ const AddAECase = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-    
-    // Clear patient IDs when switching type
-    if (name === 'patient_type') {
-      setFormData({
-        ...formData,
-        patient_type: value,
-        patient: '',
-        temp_patient: ''
-      });
-    }
-    
+    setFormData(prev => ({
+      ...prev,
+      [name]: value,
+      ...(name === 'patient_type' ? { patient: '', temp_patient: '' } : {})
+    }));
+
     if (errors[name]) {
-      setErrors({ ...errors, [name]: '' });
+      setErrors(prev => ({ ...prev, [name]: '' }));
     }
   };
 
@@ -124,22 +97,10 @@ const AddAECase = () => {
 
     // Validation
     const newErrors = {};
-    
-    if (!formData.patient_type) {
-      newErrors.patient_type = 'Patient type is required';
-    }
-    
-    if (formData.patient_type === 'Permanent' && !formData.patient) {
-      newErrors.patient = 'Please select a patient';
-    }
-    
-    if (formData.patient_type === 'Temporary' && !formData.temp_patient) {
-      newErrors.temp_patient = 'Please select a temporary patient';
-    }
-    
-    if (!formData.triage_level) {
-      newErrors.triage_level = 'Triage level is required';
-    }
+    if (!formData.patient_type) newErrors.patient_type = 'Patient type is required';
+    if (formData.patient_type === 'Permanent' && !formData.patient) newErrors.patient = 'Please select a patient';
+    if (formData.patient_type === 'Temporary' && !formData.temp_patient) newErrors.temp_patient = 'Please select a temporary patient';
+    if (!formData.triage_level) newErrors.triage_level = 'Triage level is required';
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -151,11 +112,10 @@ const AddAECase = () => {
     setSuccessMessage('');
 
     try {
-      const response = await api.post('/ae/case/create/', formData);
+      const response = await createAECase(formData);
 
       setSuccessMessage(response.data.message || 'A&E Case registered successfully!');
-      
-      // Reset form
+
       setFormData({
         patient_type: '',
         patient: '',
@@ -169,10 +129,8 @@ const AddAECase = () => {
       setTimeout(() => {
         navigate('/ae-module/list-ae-cases');
       }, 2000);
-
     } catch (error) {
       console.error('Error:', error);
-      
       if (error.response?.data) {
         setErrors(error.response.data);
       } else {
@@ -200,20 +158,13 @@ const AddAECase = () => {
           setDarkMode={setDarkMode}
           notifications={[]}
         />
-
-        <Sidebar
-          open={sidebarOpen}
-          role={role}
-          onClose={handleCloseSidebar}
-        />
-
+        <Sidebar open={sidebarOpen} role={role} onClose={handleCloseSidebar} />
         <div className="add-ae-case-container">
           <div className="loading-state">
             <div className="spinner-large"></div>
             <p>Loading form data...</p>
           </div>
         </div>
-
         <Footer1 />
       </div>
     );
@@ -227,29 +178,16 @@ const AddAECase = () => {
         setDarkMode={setDarkMode}
         notifications={[]}
       />
-
-      <Sidebar
-        open={sidebarOpen}
-        role={role}
-        onClose={handleCloseSidebar}
-      />
-
+      <Sidebar open={sidebarOpen} role={role} onClose={handleCloseSidebar} />
       <div className="add-ae-case-container">
         <div className="add-ae-case-content">
           {/* Breadcrumb Navigation */}
           <div className="breadcrumb-nav">
-            <button 
-              className="breadcrumb-back"
-              onClick={() => navigate('/ae-module')}
-            >
-              <i className="fas fa-chevron-left"></i>
-              <span>A&E Module</span>
+            <button className="breadcrumb-back" onClick={() => navigate('/ae-module')}>
+              <i className="fas fa-chevron-left"></i> <span>A&E Module</span>
             </button>
             <span className="breadcrumb-separator">/</span>
-            <button 
-              className="breadcrumb-back"
-              onClick={() => navigate('/ae-module/ae-case-menu')}
-            >
+            <button className="breadcrumb-back" onClick={() => navigate('/ae-module/ae-case-menu')}>
               <span>A&E Case Menu</span>
             </button>
             <span className="breadcrumb-separator">/</span>
@@ -257,31 +195,26 @@ const AddAECase = () => {
           </div>
 
           <div className="form-header">
-            <h1>
-              <i className="fas fa-ambulance me-3"></i>
-              Register A&E Case
-            </h1>
+            <h1><i className="fas fa-ambulance me-3"></i>Register A&E Case</h1>
             <p>Register new accident & emergency case</p>
           </div>
 
           {successMessage && (
             <div className="alert alert-success">
-              <i className="fas fa-check-circle me-2"></i>
-              {successMessage}
+              <i className="fas fa-check-circle me-2"></i>{successMessage}
             </div>
           )}
 
           {errors.general && (
             <div className="alert alert-danger">
-              <i className="fas fa-exclamation-circle me-2"></i>
-              {errors.general}
+              <i className="fas fa-exclamation-circle me-2"></i>{errors.general}
             </div>
           )}
 
           <div className="form-card">
             <form onSubmit={handleSubmit}>
               <div className="form-grid">
-                
+
                 {/* Patient Type */}
                 <div className="form-group">
                   <label className="form-label">
@@ -301,7 +234,7 @@ const AddAECase = () => {
                   {errors.patient_type && <span className="error-text">{errors.patient_type}</span>}
                 </div>
 
-                {/* Permanent Patient Select */}
+                {/* Permanent Patient */}
                 {formData.patient_type === 'Permanent' && (
                   <div className="form-group">
                     <label className="form-label">
@@ -316,7 +249,7 @@ const AddAECase = () => {
                     >
                       <option value="">Select Patient</option>
                       {patients.length > 0 ? (
-                        patients.map((patient) => (
+                        patients.map(patient => (
                           <option key={patient.patient_auto_id} value={patient.patient_auto_id}>
                             {patient.patient_id} - {patient.patient_name} - {patient.patient_phone}
                           </option>
@@ -329,7 +262,7 @@ const AddAECase = () => {
                   </div>
                 )}
 
-                {/* Temporary Patient Select */}
+                {/* Temporary Patient */}
                 {formData.patient_type === 'Temporary' && (
                   <div className="form-group">
                     <label className="form-label">
@@ -344,7 +277,7 @@ const AddAECase = () => {
                     >
                       <option value="">Select Temporary Patient</option>
                       {tempPatients.length > 0 ? (
-                        tempPatients.map((tp) => (
+                        tempPatients.map(tp => (
                           <option key={tp.temp_patient_id} value={tp.temp_patient_id}>
                             {tp.temp_patient_code} - {tp.name} - {tp.gender || 'N/A'}
                           </option>
@@ -379,9 +312,7 @@ const AddAECase = () => {
 
                 {/* Brought By */}
                 <div className="form-group">
-                  <label className="form-label">
-                    Brought By
-                  </label>
+                  <label className="form-label">Brought By</label>
                   <input
                     type="text"
                     name="brought_by"
@@ -394,9 +325,7 @@ const AddAECase = () => {
 
                 {/* Ambulance */}
                 <div className="form-group">
-                  <label className="form-label">
-                    Ambulance
-                  </label>
+                  <label className="form-label">Ambulance</label>
                   <select
                     name="ambulance"
                     className="form-control"
@@ -405,11 +334,9 @@ const AddAECase = () => {
                     disabled={ambulances.length === 0}
                   >
                     <option value="">
-                      {ambulances.length === 0 
-                        ? 'No ambulances available' 
-                        : 'Select Ambulance (if applicable)'}
+                      {ambulances.length === 0 ? 'No ambulances available' : 'Select Ambulance (if applicable)'}
                     </option>
-                    {ambulances.map((amb) => (
+                    {ambulances.map(amb => (
                       <option key={amb.ambulance_id} value={amb.ambulance_id}>
                         {amb.vehicle_no} - {amb.driver_name}
                       </option>
@@ -417,11 +344,9 @@ const AddAECase = () => {
                   </select>
                 </div>
 
-                {/* Notes - Full Width */}
+                {/* Notes */}
                 <div className="form-group full-width">
-                  <label className="form-label">
-                    Additional Notes
-                  </label>
+                  <label className="form-label">Additional Notes</label>
                   <textarea
                     name="notes"
                     className="form-control"
@@ -441,24 +366,17 @@ const AddAECase = () => {
                   onClick={() => navigate('/ae-module/ae-case-menu')}
                   disabled={loading}
                 >
-                  <i className="fas fa-times me-2"></i>
-                  Cancel
+                  <i className="fas fa-times me-2"></i> Cancel
                 </button>
-                
-                <button
-                  type="submit"
-                  className="btn btn-primary"
-                  disabled={loading}
-                >
+
+                <button type="submit" className="btn btn-primary" disabled={loading}>
                   {loading ? (
                     <>
-                      <span className="spinner-small"></span>
-                      Registering...
+                      <span className="spinner-small"></span> Registering...
                     </>
                   ) : (
                     <>
-                      <i className="fas fa-save me-2"></i>
-                      Register Case
+                      <i className="fas fa-save me-2"></i> Register Case
                     </>
                   )}
                 </button>
@@ -467,7 +385,6 @@ const AddAECase = () => {
           </div>
         </div>
       </div>
-
       <Footer1 />
     </div>
   );

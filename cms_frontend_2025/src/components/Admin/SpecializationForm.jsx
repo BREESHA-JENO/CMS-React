@@ -22,12 +22,18 @@ const SpecializationForm = () => {
     }
   }, [id]);
 
+  const namePattern = /^[A-Za-z\s]+$/;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!name.trim()) {
       alert("Name is required.");
       return;
     }
+    if (!namePattern.test(name.trim())) {
+    alert("Specialization name must contain only letters.");
+    return;
+  }
 
     setLoading(true);
 

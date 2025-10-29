@@ -1,4 +1,10 @@
 export const validateName = (name) => {
+  if (!name || typeof name !== "string") {
+    return "Name is required.";
+  }
+  if (name.startsWith(" ")) {
+    return "Name should not start with a blank space.";
+  }
   if (!/^[A-Za-z\s]+$/.test(name)) {
     return "Name should contain only alphabets and spaces.";
   }

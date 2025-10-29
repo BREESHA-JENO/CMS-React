@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../../../Utils/axiosConfig';
+import { listAECases } from '../../../Service/ae_api';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './ListAECase.css';
 import Header1 from '../../../Elements/Header1';
@@ -41,9 +41,15 @@ const ListAECases = () => {
     setError('');
 
     try {
-      const response = await api.get('/ae/case/');
-      setCases(response.data);
-      setFilteredCases(response.data);
+      const response = await listAECases();
+      // If paginated, use response.data.results; else, use response.data
+      if (response.data.results) {
+        setCases(response.data.results);
+        setFilteredCases(response.data.results);
+      } else {
+        setCases(response.data);
+        setFilteredCases(response.data);
+      }
     } catch (err) {
       console.error('Error:', err);
       setError('Failed to load cases. Please try again.');

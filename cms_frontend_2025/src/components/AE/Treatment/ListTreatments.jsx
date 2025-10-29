@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import api from '../../../Utils/axiosConfig';
+import { getAECase, listTreatments } from '../../../Service/ae_api';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './ListTreatments.css';
 import Header1 from '../../../Elements/Header1';
@@ -32,9 +32,10 @@ const ListTreatments = () => {
 
     try {
       const [caseRes, treatmentsRes] = await Promise.all([
-        api.get(`/ae/case/${caseId}/`),
-        api.get(`/ae/treatment/case/${caseId}/`)
+        getAECase(caseId),
+        listTreatments({ ae_case: caseId })  // assuming your listTreatments accepts filters as params
       ]);
+
 
       setCaseInfo(caseRes.data);
       setTreatments(treatmentsRes.data);

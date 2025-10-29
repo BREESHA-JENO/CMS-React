@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../../../Utils/axiosConfig';
+import { searchAECases } from '../../../Service/ae_api';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './SearchAECase.css';
 import Header1 from '../../../Elements/Header1';
@@ -51,7 +51,7 @@ const SearchAECase = () => {
       }
 
 // Change search endpoint to:
-        const response = await api.get(`/ae/case/search/?query=${searchTerm}&status=${statusFilter}`);
+      const response = await searchAECases({ query: searchTerm.trim(), status: statusFilter === 'all' ? undefined : statusFilter });
       setResults(response.data);
     } catch (err) {
       console.error('Search error:', err);

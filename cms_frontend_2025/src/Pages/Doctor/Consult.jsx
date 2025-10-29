@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import ConsultationForm from "../../components/Doctor/ConsultationForm";
-import PrescriptionForm from "../../components/Doctor/PrescriptionForm";
-import LabTestForm from "../../components/Doctor/LabTestForm";
-import { createConsultation, createMedicinePrescription, createLabPrescription } from "../../Service/doctor_api";
+import UnifiedPrescriptionForm from "../../components/Doctor/UnifiedPrescriptionForm";
+import { createConsultation } from "../../Service/doctor_api";
 
 const ConsultPage = () => {
   const location = useLocation();
@@ -29,7 +28,7 @@ const ConsultPage = () => {
     try {
       const res = await createConsultation(data);
       setConsultationData(res.data);
-      setMessage("✅ Consultation saved successfully!");
+      setMessage(""); // Clear any previous messages
       setActiveModal(null);
       setShowPrescriptionOptions(true);
       return res.data;
@@ -40,42 +39,6 @@ const ConsultPage = () => {
     }
   };
 
-  const handlePrescriptionSubmit = async (data) => {
-    try {
-      await createMedicinePrescription(data);
-      setMessage("✅ Medicine prescription added successfully!");
-      setActiveModal(null);
-      setShowPrescriptionOptions(false);
-      // Wait a moment then redirect
-      setTimeout(() => navigate("/doctor/appointments"), 1500);
-    } catch (err) {
-      const msg = err.response?.data?.error || err.message;
-      setMessage(`Error: ${msg}`);
-      throw err;
-    }
-  };
-
-  const handleLabTestSubmit = async (data) => {
-    try {
-      await createLabPrescription(data);
-      setMessage("✅ Lab tests prescribed successfully!");
-      setActiveModal(null);
-      setShowPrescriptionOptions(false);
-      // Wait a moment then redirect
-      setTimeout(() => navigate("/doctor/appointments"), 1500);
-    } catch (err) {
-      const msg = err.response?.data?.error || err.message;
-      setMessage(`Error: ${msg}`);
-      throw err;
-    }
-  };
-
-  const handleCompleteWithoutPrescription = () => {
-    setMessage("✅ Consultation completed successfully!");
-    setShowPrescriptionOptions(false);
-    // Wait a moment then redirect
-    setTimeout(() => navigate("/doctor/appointments"), 1500);
-  };
 
   if (!appointment) {
     return (
@@ -105,33 +68,47 @@ const ConsultPage = () => {
         </div>
       )}
 
-      {/* Show prescription options after successful consultation */}
+      {/* Show prescription option after successful consultation */}
       {showPrescriptionOptions && (
-        <div className="card shadow-sm mb-4">
-          <div className="card-body text-center">
-            <h5 className="card-title mb-3">✅ Consultation Completed Successfully!</h5>
-            <p className="text-muted mb-4">Would you like to add prescriptions or lab tests?</p>
-            <div className="d-flex gap-3 justify-content-center flex-wrap">
-              <button 
-                className="btn btn-primary btn-lg"
+        <div className="card border-success shadow-sm mb-4">
+          <div className="card-header bg-success text-white">
+            <h5 className="mb-0">
+              <i className="fas fa-check-circle me-2"></i>
+              Consultation Completed Successfully!
+            </h5>
+          </div>
+          <div className="card-body">
+            <div className="alert alert-info mb-3">
+              <strong>Patient:</strong> {appointment?._patientName || 'Unknown'}<br/>
+              <strong>Consultation ID:</strong> {consultationData?.consultation_id}
+            </div>
+            
+            <h6 className="mb-3">Next Step:</h6>
+            
+            {/* Single Prescription Button */}
+            <div className="mb-3">
+              <button
+                className="btn btn-primary btn-lg w-100"
                 onClick={() => setActiveModal("prescription")}
+                style={{
+                  background: 'linear-gradient(45deg, #28a745, #17a2b8)',
+                  border: 'none'
+                }}
               >
-                <i className="bi bi-capsule me-2"></i>
-                Add Medicine Prescription
+                <i className="fas fa-pills me-2"></i>
+                <i className="fas fa-vial me-2"></i>
+                Create Prescription
               </button>
-              <button 
-                className="btn btn-info btn-lg"
-                onClick={() => setActiveModal("labtest")}
+            </div>
+
+            {/* Close Button */}
+            <div className="mt-3">
+              <button
+                className="btn btn-outline-secondary"
+                onClick={() => navigate("/doctor/appointments")}
               >
-                <i className="bi bi-clipboard-pulse me-2"></i>
-                Prescribe Lab Tests
-              </button>
-              <button 
-                className="btn btn-success btn-lg"
-                onClick={handleCompleteWithoutPrescription}
-              >
-                <i className="bi bi-check-circle me-2"></i>
-                Complete (No Prescription)
+                <i className="fas fa-times me-2"></i>
+                Complete Without Prescription
               </button>
             </div>
           </div>
@@ -148,22 +125,26 @@ const ConsultPage = () => {
         />
       )}
 
-      {/* Medicine Prescription Form */}
+      {/* Unified Prescription Form */}
       {activeModal === "prescription" && consultationData && (
-        <PrescriptionForm
+        <UnifiedPrescriptionForm
           consultation={consultationData}
+          appointment={appointment}
           staffId={staffId}
-          onSubmit={handlePrescriptionSubmit}
-          onClose={() => setActiveModal(null)}
-        />
-      )}
-
-      {/* Lab Test Form */}
-      {activeModal === "labtest" && consultationData && (
-        <LabTestForm
-          consultation={consultationData}
-          staffId={staffId}
-          onSubmit={handleLabTestSubmit}
+          onSubmit={async (results) => {
+            let successMessage = "✅ Prescription created successfully! ";
+            if (results.medicine && results.labTest) {
+              successMessage += "Both medicine and lab test prescriptions have been saved.";
+            } else if (results.medicine) {
+              successMessage += "Medicine prescription has been saved.";
+            } else if (results.labTest) {
+              successMessage += "Lab test prescription has been saved.";
+            }
+            setMessage(successMessage);
+            setActiveModal(null);
+            setShowPrescriptionOptions(false);
+            setTimeout(() => navigate("/doctor/appointments"), 2000);
+          }}
           onClose={() => setActiveModal(null)}
         />
       )}

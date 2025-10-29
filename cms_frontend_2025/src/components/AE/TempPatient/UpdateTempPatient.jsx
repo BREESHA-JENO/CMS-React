@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './UpdateTempPatient.css';
-import api from '../../../Utils/axiosConfig';
+import { getTempPatient, updateTempPatient } from '../../../Service/ae_api';
 import Header1 from '../../../Elements/Header1';
 import Footer1 from '../../../Elements/Footer1';
 import Sidebar from '../../../Elements/Sidebar';
@@ -39,28 +39,27 @@ const UpdateTempPatient = () => {
   }, [id]);
 
   const fetchPatient = async () => {
-    try {
-      const response = await api.get(`/ae/temp-patient/${id}/`);
-      const patient = response.data;
-      
-      setFormData({
-        name: patient.name,
-        approx_age: patient.approx_age || '',
-        gender: patient.gender || '',
-        description: patient.description || '',
-        identification_marks: patient.identification_marks || '',
-        emergency_contact: patient.emergency_contact || ''
-      });
-      
-      setPatientCode(patient.temp_patient_code);
-      setStatus(patient.status);
-      setLoading(false);
-    } catch (error) {
-      console.error('Error:', error);
-      setErrors({ general: 'Failed to load patient data' });
-      setLoading(false);
-    }
-  };
+  try {
+    const response = await getTempPatient(id); // GET, not PUT!
+    const patient = response.data;
+    setFormData({
+      name: patient.name,
+      approx_age: patient.approx_age || '',
+      gender: patient.gender || '',
+      description: patient.description || '',
+      identification_marks: patient.identification_marks || '',
+      emergency_contact: patient.emergency_contact || ''
+    });
+    setPatientCode(patient.temp_patient_code);
+    setStatus(patient.status);
+    setLoading(false);
+  } catch (error) {
+    console.error('Error:', error);
+    setErrors({ general: 'Failed to load patient data' });
+    setLoading(false);
+  }
+};
+
 
   // Handle input changes
   const handleChange = (e) => {
@@ -109,7 +108,7 @@ const UpdateTempPatient = () => {
     setSuccessMessage('');
 
     try {
-      const response = await api.put(`/ae/temp-patient/${id}/update/`, formData);
+      const response = await updateTempPatient(id, formData);
       setSuccessMessage(response.data.message);
 
       setTimeout(() => {

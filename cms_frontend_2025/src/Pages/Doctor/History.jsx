@@ -106,7 +106,7 @@ const HistoryPage = () => {
           <div className="card-body">
             <div className="row align-items-center">
               <div className="col-md-3">
-                <label className="form-label fw-bold">
+                <label className="form-label fw-bold text-dark">
                   <i className="fas fa-calendar me-2"></i>Filter by Month
                 </label>
               </div>
@@ -127,7 +127,7 @@ const HistoryPage = () => {
                 </select>
               </div>
               <div className="col-md-5">
-                <div className="text-muted">
+                <div className="text-dark">
                   Showing {filteredRecords.length} of {records.length} consultations
                   {selectedMonth && ` for ${new Date(selectedMonth + '-01').toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}`}
                 </div>
@@ -169,7 +169,7 @@ const HistoryPage = () => {
                         </h5>
                       </div>
                       <div className="col-md-6 text-md-end">
-                        <small>
+                        <small style={{ color: '#000' }}>
                           <i className="fas fa-calendar me-1"></i>
                           {new Date(record.created_at).toLocaleDateString('en-US', {
                             year: 'numeric',
@@ -178,7 +178,7 @@ const HistoryPage = () => {
                             hour: '2-digit',
                             minute: '2-digit'
                           })}
-                        </small>
+                        </small >
                       </div>
                     </div>
                   </div>

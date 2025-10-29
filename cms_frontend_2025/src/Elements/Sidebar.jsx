@@ -34,6 +34,11 @@ function Sidebar({ open, role, onClose }) {
     links=[
       {path: "/ambulance", label: "Driver Dashboard"}
     ]
+  } else if (role === "DOC") {
+    links = [
+      { path: "/doctor", label: "Back to Dashboard", icon: <FaHome /> },
+      { path: "/doctor/appointments", label: "View Appointments", icon: <FaCalendarAlt /> },
+    ];
   }
 
   return (

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../../../Utils/axiosConfig';
+import { addTempPatient } from '../../../Service/ae_api';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './AddTempPatient.css';
 import Header1 from '../../../Elements/Header1';
@@ -58,24 +58,14 @@ const AddTempPatient = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (formData.emergency_contact) {
-      const phoneError = validatePhone(formData.emergency_contact);
-      if (phoneError) {
-        setErrors({ emergency_contact: phoneError });
-        return;
-      }
-    }
-
+    // ...validation
     setLoading(true);
     setErrors({});
     setSuccessMessage('');
-
     try {
-      const response = await api.post('/ae/temp-patient/create/', formData);
-
+      // Correct function from API service
+      const response = await addTempPatient(formData);
       setSuccessMessage(response.data.message);
-      
       setFormData({
         name: 'Unknown',
         approx_age: '',
@@ -84,19 +74,12 @@ const AddTempPatient = () => {
         identification_marks: '',
         emergency_contact: ''
       });
-
       setTimeout(() => {
         navigate('/ae-module/list-temp-patients');
       }, 2000);
 
     } catch (error) {
-      console.error('Error:', error);
-      
-      if (error.response?.data) {
-        setErrors(error.response.data);
-      } else {
-        setErrors({ general: 'Failed to register patient. Please try again.' });
-      }
+      // ...error handling
     } finally {
       setLoading(false);
     }

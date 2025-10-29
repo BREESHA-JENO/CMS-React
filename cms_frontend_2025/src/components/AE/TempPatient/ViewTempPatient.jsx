@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import api from '../../../Utils/axiosConfig';
+import { getTempPatient } from '../../../Service/ae_api';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './ViewTempPatient.css';
 import Header1 from '../../../Elements/Header1';
@@ -27,7 +27,7 @@ const ViewTempPatient = () => {
 
   const fetchPatient = async () => {
     try {
-      const response = await api.get(`/ae/temp-patient/${id}/`);
+      const response = await getTempPatient(id);
       setPatient(response.data);
       setLoading(false);
     } catch (err) {

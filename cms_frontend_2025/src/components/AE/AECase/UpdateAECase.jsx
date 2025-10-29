@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import api from '../../../Utils/axiosConfig';
+import { getAECase, updateAECase } from '../../../Service/ae_api';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './UpdateAECase.css';
 import Header1 from '../../../Elements/Header1';
@@ -39,7 +39,7 @@ const UpdateAECase = () => {
     setDataLoading(true);
     try {
       const [caseRes, doctorsRes] = await Promise.all([
-        api.get(`/ae/case/${id}/`),
+        getAECase(id),
         api.get('/admin/staff/?role=Doctor')
       ]);
 
@@ -84,7 +84,7 @@ const UpdateAECase = () => {
     setSuccessMessage('');
 
     try {
-      const response = await api.put(`/ae/case/${id}/update/`, formData);
+      const response = await updateAECase(id, formData);
 
       setSuccessMessage(response.data.message);
 

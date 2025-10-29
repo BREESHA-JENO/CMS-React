@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../../../Utils/axiosConfig';
+import {listTempPatients} from '../../../Service/ae_api';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './SearchTempPatients.css';
 import Header1 from '../../../Elements/Header1';
@@ -23,27 +23,29 @@ const SearchTempPatient = () => {
   const [searched, setSearched] = useState(false);
 
   const handleSearch = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (!searchQuery.trim()) {
-      setError('Please enter a search term');
-      return;
-    }
+  if (!searchQuery.trim()) {
+    setError('Please enter a search term');
+    return;
+  }
 
-    setLoading(true);
-    setError('');
-    setSearched(true);
+  setLoading(true);
+  setError('');
+  setSearched(true);
 
-    try {
-      const response = await api.get(`/ae/temp-patient/list/?search=${searchQuery}`);
-      setSearchResults(response.data);
-    } catch (err) {
-      console.error('Error:', err);
-      setError('Search failed. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+    // Pass search param to listTempPatients
+    const response = await listTempPatients({ search: searchQuery });
+    setSearchResults(response.data);
+  } catch (err) {
+    console.error('Error:', err);
+    setError('Search failed. Please try again.');
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const handleClear = () => {
     setSearchQuery('');

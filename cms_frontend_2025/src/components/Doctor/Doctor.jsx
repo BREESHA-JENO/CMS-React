@@ -53,7 +53,7 @@ const Doctor = ({ onAction, doctorInfo, dashboardStats, darkMode }) => {
             <div className={`doctor-stat-label${darkMode ? " dark" : ""}`}>Tomorrow's Appointments</div>
           </div>
         </div>
-        
+
         {/* Action Cards Section */}
         <div className="doctor-actions-section">
           <h2 className={`doctor-actions-title${darkMode ? " dark" : ""}`}>Quick Actions</h2>

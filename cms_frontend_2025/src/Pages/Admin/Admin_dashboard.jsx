@@ -1,11 +1,37 @@
 // AdminDashboard.jsx
-import React, { useState } from 'react';
+import React, { useState ,useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaUsers, FaKey, FaClipboardList, FaBriefcaseMedical } from 'react-icons/fa';
 import './AdminDashboard.css';
 
 const AdminDashboard = ({ darkMode }) => {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      navigate('/login', { replace: true });
+    }
+
+    // Prevent back navigation to login page
+    const handlePopState = (e) => {
+      // Check if previous page was login (referrer NOT reliable in SPA)
+      // Instead, check if this navigation removes token
+      if (!localStorage.getItem("accessToken")) {
+        if (window.confirm("Confirm form resubmission?")) {
+          navigate('/login', { replace: true });
+        } else {
+          // Optionally, move user forward to dashboard/ stay
+          window.history.forward();
+        }
+      }
+    };
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [navigate]);
 
   const dashboardCards = [
     {

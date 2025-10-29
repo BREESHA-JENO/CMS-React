@@ -1,28 +1,7 @@
-import axios from "axios";
+import api from './api';
 
-
-
-// Create axios instance with custom config
-const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:8000/api",
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  withCredentials: false
-});
-
-// Add auth token to requests
-// Add auth token to requests
-apiClient.interceptors.request.use((config) => {
-  const token = localStorage.getItem("accessToken"); // ONLY use accessToken
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-}, (error) => {
-  return Promise.reject(error);
-});
-
+// Use the configured api instance with the correct base URL
+const apiClient = api;
 
 // Helper function to convert HTTP errors to user-friendly messages
 const getUserFriendlyError = (error) => {
@@ -137,7 +116,7 @@ apiClient.interceptors.response.use(
 
 // Consultations (Doctor API)
 export const createConsultation = (data) =>
-  apiClient.post("/doctor/consultations/", {
+  apiClient.post("/api/doctor/consultations/", {
     consultation_id: data.consultation_id,
     appointment_id: data.appointment_id,
     staff_id: data.staff_id,
@@ -147,40 +126,135 @@ export const createConsultation = (data) =>
   });
 
 export const getConsultations = () =>
-  apiClient.get("/doctor/consultations/");
+  apiClient.get("/api/doctor/consultations/");
 
-// Prescriptions - Medicine (Doctor API)
-export const createMedicinePrescription = (data) =>
-  apiClient.post("/doctor/prescriptions/med/", data);
+// Create medicine prescription
+export const createMedicinePrescription = async (consultationId, details) => {
+    try {
+        const formattedDetails = details.map(detail => ({
+      medicine: detail.isCustom ? null : detail.medicine,
+      // serializer expects empty string for custom name when not provided (not null)
+      custom_medicine_name: detail.isCustom ? (detail.customMedicine || '') : '',
+            dosage: detail.dosage,
+            quantity: parseInt(detail.quantity),
+            instructions: detail.instructions || ''
+        }));
+
+    const payload = {
+      // ensure consultation id is numeric PK where possible
+      consultation_id: Number.isInteger(consultationId) ? consultationId : parseInt(consultationId, 10),
+      details: formattedDetails
+    };
+
+    const response = await apiClient.post("/api/doctor/prescriptions/med/", payload);
+        return response.data;
+    } catch (error) {
+        console.error("[Medicine Prescription] Error:", error);
+        const errorMsg = error.response?.data?.message 
+            || error.response?.data?.error 
+            || error.message 
+            || "Failed to create medicine prescription";
+        throw new Error(errorMsg);
+    }
+};
 
 // Prescriptions - Lab Tests
-export const createLabPrescription = (payload) => apiClient.post("/doctor/prescriptions/lab/", payload);
-export const getLabPrescriptions = () => apiClient.get("/doctor/prescriptions/lab/");
+export const createLabPrescription = async (consultationId, details) => {
+    try {
+    const formattedDetails = details.map(detail => {
+      const labVal = detail.lab_test;
+      const labPk = detail.isCustom ? null : (labVal === '' || labVal == null ? null : Number(labVal));
+      return {
+        lab_test: labPk,
+        // serializer doesn't accept null for custom name; send empty string when not provided
+        custom_lab_test_name: detail.isCustom ? (detail.customLabTest || '') : '',
+        instructions: detail.instructions || ''
+      };
+    });
+    const payload = {
+      consultation_id: Number.isInteger(consultationId) ? consultationId : parseInt(consultationId, 10),
+      details: formattedDetails
+    };
+
+  // Debug: log payload to help diagnose PK/type issues
+  console.log('[Lab Prescription] Payload:', JSON.stringify(payload, null, 2));
+  const response = await apiClient.post("/api/doctor/prescriptions/lab/", payload);
+    return response.data;
+    } catch (error) {
+        console.error("[Lab Prescription] Error:", error);
+        const errorMsg = error.response?.data?.message 
+            || error.response?.data?.error 
+            || error.message 
+            || "Failed to create lab prescription";
+        throw new Error(errorMsg);
+    }
+};
+
+export const getLabPrescriptions = () => apiClient.get("/api/doctor/prescriptions/lab/");
 
 // Appointments
-export const getAllAppointments = () => apiClient.get("/receptionist/appointments/");
-export const getMyAppointments = () => apiClient.get("/doctor/appointments/");
-export const getAppointmentsByDate = (date) => apiClient.get("/receptionist/appointments/", { params: { date } });
-export const getTodaysAppointments = () => apiClient.get("/receptionist/appointments/", { params: {} });
+export const getMyAppointments = async (date) => {
+    try {
+        console.log('[Doctor API] Fetching appointments for date:', date);
+        const response = await apiClient.get("/api/doctor/appointments/", {
+            params: { date }
+        });
+        console.log('[Doctor API] Appointments response:', response.data);
+        return response.data;
+    } catch (error) {
+        console.error('[Doctor API] Failed to fetch appointments:', error);
+        throw error;
+    }
+};
 
 // Medicines (for Doctor module) - Fetch from doctor API
-export const getAllMedicines = () => apiClient.get("/doctor/medicines/");
+// Get all medicines for prescription
+export const getAllMedicines = async () => {
+    try {
+  const response = await apiClient.get("/api/doctor/medicines/");
+        return response.data;
+    } catch (error) {
+        console.error("[Medicines] Error:", error);
+        const errorMsg = error.response?.data?.message || error.message || "Failed to fetch medicines";
+        throw new Error(errorMsg);
+    }
+};
 
-// Lab Tests (for Doctor module) - Fetch from doctor API
-export const getAllLabTests = () => apiClient.get("/doctor/lab-tests/");
+// Get all lab tests
+export const getAllLabTests = async () => {
+    try {
+  const response = await apiClient.get("/api/doctor/lab-tests/");
+    // Normalize backend shape to frontend expected keys
+    // Backend may return keys like { Id, test_id, test_name, price }
+    if (Array.isArray(response.data)) {
+      return response.data.map(item => ({
+        // Primary key used by backend is `Id`
+        test_auto_id: item.Id ?? item.id ?? item.test_auto_id,
+        test_id: item.test_id ?? item.LabTestId ?? null,
+        test_name: item.test_name ?? item.LabTestName ?? item.test_name,
+        rate: item.price ?? item.Rate ?? item.rate ?? '0'
+      }));
+    }
+    return [];
+    } catch (error) {
+        console.error("[Lab Tests] Error:", error);
+        const errorMsg = error.response?.data?.message || error.message || "Failed to fetch lab tests";
+        throw new Error(errorMsg);
+    }
+};
 
 // Patients (for Doctor module) - Updated to match Django backend
-export const getAllPatients = () => apiClient.get("/receptionist/patients/");
-export const getPatientById = (patientId) => apiClient.get(`/receptionist/patients/${patientId}/`);
+export const getAllPatients = () => apiClient.get("/api/receptionist/patients/");
+export const getPatientById = (patientId) => apiClient.get(`/api/receptionist/patients/${patientId}/`);
 
 // Get current doctor/staff information
-export const getCurrentDoctor = () => apiClient.get("/admin/staff/me/");
+export const getCurrentDoctor = () => apiClient.get("/api/admin/staff/me/");
 // Note: admin staff endpoints are ADMIN-only; avoid for doctor users
-export const getStaffById = (id) => apiClient.get(`/admin/staff/${id}/`);
+export const getStaffById = (id) => apiClient.get(`/api/admin/staff/${id}/`);
 
 // Patient Consultation History with full prescriptions
 export const getPatientConsultationHistory = (patientId, month = null) => {
-  const url = `/doctor/patient-history/${patientId}/`;
+  const url = `/api/doctor/patient-history/${patientId}/`;
   const params = month ? { month } : {};
   return apiClient.get(url, { params });
 };
@@ -189,8 +263,8 @@ export const getPatientConsultationHistory = (patientId, month = null) => {
 export const getConsultationById = (consultationId) => apiClient.get(`/doctor/consultations/${consultationId}/`);
 
 // Get prescription by ID
-export const getMedicinePrescriptionById = (prescriptionId) => apiClient.get(`/doctor/prescriptions/med/${prescriptionId}/`);
-export const getLabPrescriptionById = (prescriptionId) => apiClient.get(`/doctor/prescriptions/lab/${prescriptionId}/`);
+export const getMedicinePrescriptionById = (prescriptionId) => apiClient.get(`/api/doctor/prescriptions/med/${prescriptionId}/`);
+export const getLabPrescriptionById = (prescriptionId) => apiClient.get(`/api/doctor/prescriptions/lab/${prescriptionId}/`);
 
 // Dashboard Statistics
-export const getDoctorDashboardStats = () => apiClient.get("/doctor/dashboard/stats/");
+export const getDoctorDashboardStats = () => apiClient.get("/api/doctor/dashboard/stats/");

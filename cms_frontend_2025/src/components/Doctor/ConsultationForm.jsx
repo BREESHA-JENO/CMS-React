@@ -6,8 +6,17 @@ const ConsultationForm = ({ appointment, staffId, onSubmit, onClose }) => {
   console.log('ConsultationForm - Appointment data:', appointment);
   console.log('ConsultationForm - Staff ID:', staffId);
   
+  // Debug appointment ID extraction
+  const appointmentId = appointment?._appointmentAutoId || appointment?.appointment_auto_id || appointment?.id || '';
+  console.log('ConsultationForm - Extracted appointment ID:', appointmentId);
+  console.log('ConsultationForm - Available ID fields:', {
+    _appointmentAutoId: appointment?._appointmentAutoId,
+    appointment_auto_id: appointment?.appointment_auto_id,
+    id: appointment?.id
+  });
+
   const [formData, setFormData] = useState({
-    appointment_id: appointment?.appointment_auto_id || appointment?._appointmentAutoId || appointment?.id || '',
+    appointment_id: appointmentId,
     staff_id: staffId || '',
     symptoms: '',
     diagnosis: '',
@@ -25,6 +34,27 @@ const ConsultationForm = ({ appointment, staffId, onSubmit, onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    
+    // Validate appointment ID
+    if (!formData.appointment_id) {
+      setError('Invalid appointment data. Please try again.');
+      console.error('ConsultationForm - Missing appointment ID:', formData);
+      return;
+    }
+    
+    // Validate symptoms (must be at least 3 characters)
+    if (!formData.symptoms || formData.symptoms.trim().length < 3) {
+      setError('Please provide a brief description of symptoms (at least 3 characters).');
+      return;
+    }
+    
+    // Validate that either diagnosis or notes is provided
+    if ((!formData.diagnosis || formData.diagnosis.trim() === '') && 
+        (!formData.notes || formData.notes.trim() === '')) {
+      setError('Please provide either a diagnosis or notes for the consultation.');
+      return;
+    }
+    
     try {
       // Remove staff_id from submission as it's auto-assigned by backend
       const { staff_id, ...submissionData } = formData;
@@ -32,27 +62,8 @@ const ConsultationForm = ({ appointment, staffId, onSubmit, onClose }) => {
       await onSubmit(submissionData);
     } catch (err) {
       console.error('ConsultationForm - Submission error:', err);
-      
-      // Handle specific validation errors
-      let errorMessage = 'Failed to save consultation. Please try again.';
-      
-      if (err.response?.data?.error) {
-        const backendError = err.response.data.error;
-        
-        // Handle duplicate consultation error
-        if (backendError.includes('already been completed') || backendError.includes('Consultation already exists')) {
-          errorMessage = `⚠️ ${backendError} This appointment has already been consulted.`;
-        } else if (backendError.includes('not assigned')) {
-          errorMessage = `🚫 ${backendError}`;
-        } else {
-          errorMessage = backendError;
-        }
-      } else if (err.userFriendlyMessage) {
-        errorMessage = err.userFriendlyMessage;
-      } else if (err.message) {
-        errorMessage = err.message;
-      }
-      
+      // Use user-friendly error message if available
+      const errorMessage = err.userFriendlyMessage || err.response?.data?.error || err.message || 'Failed to save consultation. Please try again.';
       setError(errorMessage);
     }
   };
@@ -91,14 +102,17 @@ const ConsultationForm = ({ appointment, staffId, onSubmit, onClose }) => {
                 />
               </div>
               <div className="mb-3">
-                <label className="form-label">Symptoms</label>
+                <label className="form-label">Symptoms <span className="text-danger">*</span></label>
                 <textarea
                   className="form-control"
                   name="symptoms"
                   value={formData.symptoms}
                   onChange={handleChange}
+                  placeholder="Describe patient's symptoms (minimum 3 characters)"
                   required
+                  minLength="3"
                 />
+                <small className="form-text text-muted">Required: Minimum 3 characters</small>
               </div>
               <div className="mb-3">
                 <label className="form-label">Diagnosis</label>
@@ -107,7 +121,7 @@ const ConsultationForm = ({ appointment, staffId, onSubmit, onClose }) => {
                   name="diagnosis"
                   value={formData.diagnosis}
                   onChange={handleChange}
-                  required
+                  placeholder="Medical diagnosis (either diagnosis or notes required)"
                 />
               </div>
               <div className="mb-3">
@@ -117,7 +131,9 @@ const ConsultationForm = ({ appointment, staffId, onSubmit, onClose }) => {
                   name="notes"
                   value={formData.notes}
                   onChange={handleChange}
+                  placeholder="Additional consultation notes (either diagnosis or notes required)"
                 />
+                <small className="form-text text-muted">Either diagnosis or notes must be provided</small>
               </div>
               <div className="modal-footer">
                 <button type="button" className="btn btn-secondary" onClick={onClose}>

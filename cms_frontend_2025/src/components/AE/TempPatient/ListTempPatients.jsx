@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../../../Utils/axiosConfig';
+import {listTempPatients} from '../../../Service/ae_api';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './ListTempPatients.css';
 import Header1 from '../../../Elements/Header1';
@@ -36,7 +36,7 @@ const ListTempPatients = () => {
     setError('');
 
     try {
-      const response = await api.get('/ae/temp-patient/list/');
+      const response = await listTempPatients();
       setPatients(response.data);
       setFilteredPatients(response.data);
     } catch (err) {

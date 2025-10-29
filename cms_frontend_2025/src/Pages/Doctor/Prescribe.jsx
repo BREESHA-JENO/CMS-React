@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import PrescriptionForm from "../../components/Doctor/PrescriptionForm";
-import LabTestForm from "../../components/Doctor/LabTestForm";
-import { createMedicinePrescription, createLabPrescription } from "../../Service/doctor_api";
+import UnifiedPrescriptionForm from "../../components/Doctor/UnifiedPrescriptionForm";
 
 const PrescribePage = () => {
   const location = useLocation();
@@ -57,43 +55,76 @@ const PrescribePage = () => {
 
   return (
     <div className="container" style={{ padding: "1rem" }}>
-      <div className="d-flex justify-content-between align-items-center mb-3">
-        <h2 className="text-primary mb-0">Prescriptions</h2>
-        <button className="btn btn-outline-secondary" onClick={() => navigate(-1)}>Back</button>
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h2 className="text-primary mb-1">
+            <i className="fas fa-check-circle me-2"></i>
+            Consultation Completed Successfully!
+          </h2>
+          <p className="text-muted mb-0">
+            Patient: <strong>{consultation?.appointment_id?.patient_id?.patient_name || 'Unknown'}</strong> | 
+            Consultation ID: <strong>{consultation?.consultation_id}</strong>
+          </p>
+        </div>
+        <button className="btn btn-outline-secondary" onClick={() => navigate("/doctor/appointments")}>
+          <i className="fas fa-arrow-left me-2"></i>Back to Appointments
+        </button>
       </div>
 
-      <ul className="nav nav-tabs mb-3">
-        <li className="nav-item">
-          <button className={`nav-link ${active === "medicine" ? "active" : ""}`} onClick={() => setActive("medicine")}>
-            Medicine
-          </button>
-        </li>
-        <li className="nav-item">
-          <button className={`nav-link ${active === "lab" ? "active" : ""}`} onClick={() => setActive("lab")}>
-            Lab Test
-          </button>
-        </li>
-      </ul>
-
       {message && (
-        <div className={`alert ${message.startsWith("Error") ? "alert-danger" : "alert-info"}`}>{message}</div>
+        <div className={`alert ${message.startsWith("Error") ? "alert-danger" : "alert-success"}`}>
+          {message}
+        </div>
       )}
 
-      {active === "medicine" ? (
-        <PrescriptionForm
+      <div className="card border-success shadow-sm">
+        <div className="card-header bg-success text-white">
+          <h5 className="mb-0">
+            <i className="fas fa-prescription me-2"></i>
+            Choose Prescription Option
+          </h5>
+        </div>
+        <div className="card-body">
+          <h6 className="mb-3">Select how you want to prescribe:</h6>
+          {/* Single Prescription Button */}
+          <div className="mb-3">
+            <button
+              className="btn btn-primary btn-lg w-100"
+              onClick={() => setActive("prescription")}
+              style={{
+                background: 'linear-gradient(45deg, #28a745, #17a2b8)',
+                border: 'none'
+              }}
+            >
+              <i className="fas fa-pills me-2"></i>
+              <i className="fas fa-vial me-2"></i>
+              Create Prescription
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Render Selected Form */}
+      {active === "prescription" && (
+        <UnifiedPrescriptionForm
           consultation={consultation}
           staffId={staffId}
-          onSubmit={onMedicineSubmit}
-          onClose={() => navigate("/doctor")}
-        />
-      ) : (
-        <LabTestForm
-          consultation={consultation}
-          staffId={staffId}
-          onSubmit={onLabSubmit}
-          onClose={() => navigate("/doctor")}
+          onSubmit={async (results) => {
+            let successMessage = "✅ Prescription created successfully! ";
+            if (results.medicine && results.labTest) {
+              successMessage += "Both medicine and lab test prescriptions have been saved.";
+            } else if (results.medicine) {
+              successMessage += "Medicine prescription has been saved.";
+            } else if (results.labTest) {
+              successMessage += "Lab test prescription has been saved.";
+            }
+            setMessage(successMessage);
+            setActive("medicine"); // Reset to show options again
+          }}
+          onClose={() => setActive("medicine")}
         />
       )}
+
     </div>
   );
 };

@@ -16,6 +16,67 @@ const AppointmentsPage = () => {
     return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
   };
 
+  // Convert a time string to minutes since midnight for sorting.
+  // Supports 24-hour "HH:MM" and 12-hour "H:MM AM/PM" formats. Returns large number on failure so unparsable times sort last.
+  const timeStringToMinutes = (t) => {
+    const MAX = 24 * 60; // fallback for unparsable times (place at end)
+    if (!t && t !== 0) return MAX;
+    const s = String(t).trim();
+    let m = s.match(/^(\d{1,2}):(\d{2})$/);
+    if (m) {
+      const hh = parseInt(m[1], 10);
+      const mm = parseInt(m[2], 10);
+      if (isNaN(hh) || isNaN(mm)) return MAX;
+      return hh * 60 + mm;
+    }
+    m = s.match(/^(\d{1,2}):(\d{2})\s*([AaPp][Mm])$/);
+    if (m) {
+      let hh = parseInt(m[1], 10);
+      const mm = parseInt(m[2], 10);
+      const ampm = m[3].toLowerCase();
+      if (isNaN(hh) || isNaN(mm)) return MAX;
+      if (ampm === 'pm' && hh !== 12) hh += 12;
+      if (ampm === 'am' && hh === 12) hh = 0;
+      return hh * 60 + mm;
+    }
+    m = s.match(/(\d{1,2}):(\d{2})/);
+    if (m) {
+      const hh = parseInt(m[1], 10);
+      const mm = parseInt(m[2], 10);
+      if (isNaN(hh) || isNaN(mm)) return MAX;
+      return hh * 60 + mm;
+    }
+    return MAX;
+  };
+
+  // Convert YYYY-MM-DD-like string to timestamp (midnight local). Returns large value for unparsable to sort last.
+  const dateStringToTimestamp = (d) => {
+    if (!d && d !== 0) return Number.MAX_SAFE_INTEGER;
+    const s = String(d).slice(0, 10);
+    const m = s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (m) {
+      const year = parseInt(m[1], 10);
+      const month = parseInt(m[2], 10) - 1;
+      const day = parseInt(m[3], 10);
+      if ([year, month, day].some(v => Number.isNaN(v))) return Number.MAX_SAFE_INTEGER;
+      return new Date(year, month, day).getTime();
+    }
+    const parsed = Date.parse(s);
+    return isNaN(parsed) ? Number.MAX_SAFE_INTEGER : parsed;
+  };
+
+  // Sort by appointment date first (earliest date first), then by time (earliest time first).
+  const sortByDateTime = (items = []) => {
+    return items.sort((a, b) => {
+      const da = dateStringToTimestamp(a._date || a.date || a.appointment_date);
+      const db = dateStringToTimestamp(b._date || b.date || b.appointment_date);
+      if (da !== db) return da - db;
+      const ta = timeStringToMinutes(a._time || a.time || a.appoinment_time);
+      const tb = timeStringToMinutes(b._time || b.time || b.appoinment_time);
+      return ta - tb;
+    });
+  };
+
   // Set default date to today when component mounts
   useEffect(() => {
     setAppointmentDate(getTodayDate());
@@ -69,18 +130,18 @@ const AppointmentsPage = () => {
   const filterTodayAndTomorrowAppointments = (items = []) => {
     const todayStr = getTodayDate();
     const tomorrowStr = getTomorrowDate();
-    
+
     return items.filter(a => {
       const appointmentDate = String(a._date).slice(0, 10);
       const isToday = appointmentDate === todayStr;
       const isTomorrow = appointmentDate === tomorrowStr;
-      
+
       if (isToday) {
         console.log(`Today's appointment: ${appointmentDate} for patient ${a._patientName}`);
       } else if (isTomorrow) {
         console.log(`Tomorrow's appointment: ${appointmentDate} for patient ${a._patientName}`);
       }
-      
+
       return isToday || isTomorrow;
     });
   };
@@ -89,32 +150,17 @@ const AppointmentsPage = () => {
     setLoading(true);
     setMessage("");
     try {
-      const res = await getMyAppointments();
-      const norm = normalizeAppointments(res.data);
+      // Fetch all appointments (let frontend filter for today) to preserve previous working behaviour
+      const res = await getMyAppointments(); // get all appointments for this doctor
+      const norm = normalizeAppointments(res);
 
-      // Today filter by local date match (backend already filters consulted patients)
+      // Compute today's date string and filter locally (restore previous behavior)
       const today = new Date();
       const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
 
-      console.log('Today\'s date for filtering:', todayStr);
-
-      // Filter by today's date only - exclude future appointments
-      const filtered = norm.filter(a => {
-        const appointmentDate = String(a._date).slice(0, 10);
-        console.log(`Checking appointment date: ${appointmentDate} vs today: ${todayStr}`);
-        
-        // Only show appointments for today (not future dates)
-        const isToday = appointmentDate === todayStr;
-        const isFuture = appointmentDate > todayStr;
-        
-        if (isFuture) {
-          console.log(`Excluding future appointment: ${appointmentDate}`);
-        }
-        
-        return isToday;
-      });
-
-      setAppointments(filtered);
+  const filtered = norm.filter(a => String(a._date).slice(0,10) === todayStr);
+  const sorted = sortByDateTime(filtered);
+  setAppointments(sorted);
       if (filtered.length === 0) {
         setMessage(`No appointments scheduled for today (${new Date().toLocaleDateString()}). You have ${norm.length} total appointment${norm.length !== 1 ? 's' : ''}.`);
       } else {
@@ -138,15 +184,16 @@ const AppointmentsPage = () => {
     setLoading(true);
     setMessage("");
     try {
+      // fetch all appointments and filter locally for today & tomorrow
       const res = await getMyAppointments();
-      const norm = normalizeAppointments(res.data);
-      
+      const norm = normalizeAppointments(res);
+
       // Filter to show only today and tomorrow appointments
-      const filtered = filterTodayAndTomorrowAppointments(norm);
-      
-      console.log(`Total appointments: ${norm.length}, Today & Tomorrow: ${filtered.length}`);
-      
-      setAppointments(filtered);
+  const filtered = filterTodayAndTomorrowAppointments(norm);
+
+  console.log(`Total appointments: ${norm.length}, Today & Tomorrow: ${filtered.length}`);
+  const sorted = sortByDateTime(filtered);
+  setAppointments(sorted);
       if (filtered.length === 0) {
         setMessage('No appointments found for today or tomorrow.');
       } else {
@@ -154,7 +201,7 @@ const AppointmentsPage = () => {
         const tomorrowStr = getTomorrowDate();
         const todayCount = filtered.filter(a => String(a._date).slice(0, 10) === todayStr).length;
         const tomorrowCount = filtered.filter(a => String(a._date).slice(0, 10) === tomorrowStr).length;
-        
+
         setMessage(`Successfully loaded ${filtered.length} appointment${filtered.length > 1 ? 's' : ''}: ${todayCount} for today, ${tomorrowCount} for tomorrow`);
       }
     } catch (e) {
@@ -171,36 +218,38 @@ const AppointmentsPage = () => {
       setMessage('Please select a date to search appointments.');
       return;
     }
-    
+
     // Check if selected date is beyond tomorrow
     const todayStr = getTodayDate();
     const tomorrowStr = getTomorrowDate();
-    
+
     if (appointmentDate > tomorrowStr) {
       setMessage(`⚠️ Only today's and tomorrow's appointments are available. Selected date ${new Date(appointmentDate + 'T00:00:00').toLocaleDateString()} is beyond tomorrow. Please select today or tomorrow.`);
       setAppointments([]);
       return;
     }
-    
+
     console.log('Loading appointments for date:', appointmentDate);
     setLoading(true);
     setMessage("");
     try {
-      const res = await getMyAppointments();
-      console.log('Raw API response:', res.data);
-      const norm = normalizeAppointments(res.data);
+      // ask backend for appointments for the selected date when possible
+      const res = await getMyAppointments(appointmentDate);
+      console.log('Raw API response:', res);
+      const norm = normalizeAppointments(res);
       console.log('Normalized appointments:', norm);
-      
+
       // Backend already filters by doctor, just filter by date
       const filtered = norm.filter(a => {
         const appointmentDateStr = String(a._date).slice(0, 10);
         console.log(`Comparing appointment date ${appointmentDateStr} with selected date ${appointmentDate}`);
         return appointmentDateStr === appointmentDate;
       });
-      
+
       console.log('Filtered appointments for selected date:', filtered);
-      setAppointments(filtered);
-      
+      const sorted = sortByDateTime(filtered);
+      setAppointments(sorted);
+
       if (filtered.length === 0) {
         setMessage(`No appointments found for ${new Date(appointmentDate + 'T00:00:00').toLocaleDateString()}. You have ${norm.length} total appointment${norm.length !== 1 ? 's' : ''}.`);
       } else {
@@ -234,7 +283,7 @@ const AppointmentsPage = () => {
         <div>
           <h2 className="text-primary mb-1">Appointments</h2>
           {doctorInfo && (
-            <p className="text-muted mb-0">Welcome, Dr. {doctorInfo.name} (ID: {doctorInfo.staff_id})</p>
+            <p className="text-dark mb-0">Welcome, Dr. {doctorInfo.name} (ID: {doctorInfo.staff_id})</p>
           )}
         </div>
         <div>
@@ -243,18 +292,18 @@ const AppointmentsPage = () => {
       </div>
 
       <div className="card mb-4 shadow-sm border-primary">
-        <div className="card-header bg-primary text-white">
-          <h5 className="card-title mb-0">
+        <div className="card-header bg-primary">
+          <h5 className="card-title mb-0" style={{ color: '#2559f7ff' }}>
             <i className="fas fa-calendar-alt me-2"></i>
-            📅 Calendar & Appointment Search
+            Appointment Search
           </h5>
         </div>
         <div className="card-body">
           <div className="alert alert-info mb-3">
             <i className="fas fa-info-circle me-2"></i>
-            <strong>How to use:</strong> Click the date picker to open calendar or search by specific date. 
-            <br/><strong>Today's appointments:</strong> Can be consulted immediately.
-            <br/><strong>Tomorrow's appointments:</strong> View-only (consultation available tomorrow).
+           
+            <br /><strong>Today's appointments:</strong> Can be consulted immediately.
+            <br /><strong>Tomorrow's appointments:</strong> View-only (consultation available tomorrow).
           </div>
           <div className="row g-3 align-items-end">
             <div className="col-md-3">
@@ -275,62 +324,8 @@ const AppointmentsPage = () => {
                 )}
               </button>
             </div>
-            <div className="col-md-4">
-              <label htmlFor="appointmentDate" className="form-label fw-bold">
-                <i className="fas fa-calendar-alt me-2"></i>
-                Pick a Date from Calendar
-              </label>
-              <div className="input-group">
-                <span className="input-group-text bg-primary text-white">
-                  <i className="fas fa-calendar"></i>
-                </span>
-                <input
-                  type="date"
-                  id="appointmentDate"
-                  className="form-control form-control-lg border-primary"
-                  value={appointmentDate}
-                  max={getTomorrowDate()}
-                  onChange={(e) => {
-                    console.log('Date picker changed to:', e.target.value);
-                    setAppointmentDate(e.target.value);
-                    // Auto-search when date changes (with small delay)
-                    if (e.target.value) {
-                      setTimeout(() => {
-                        console.log('Auto-searching for date:', e.target.value);
-                        loadByDate();
-                      }, 500);
-                    }
-                  }}
-                  onFocus={(e) => {
-                    console.log('Date picker focused');
-                    e.target.showPicker && e.target.showPicker();
-                  }}
-                  title="Click to open calendar and select a date (future dates disabled)"
-                  style={{
-                    cursor: 'pointer',
-                    fontSize: '16px',
-                    padding: '12px',
-                    borderWidth: '2px',
-                    minHeight: '48px'
-                  }}
-                  placeholder="Click to select date from calendar"
-                />
-              </div>
-              <small className="text-muted mt-1">
-                Selected: {appointmentDate ? new Date(appointmentDate + 'T00:00:00').toLocaleDateString() : 'No date selected'}
-              </small>
-            </div>
-            <div className="col-md-2">
-              <button
-                className="btn btn-primary w-100 py-2"
-                onClick={loadByDate}
-                disabled={!appointmentDate || loading}
-                title="Search appointments for selected date"
-              >
-                <i className="fas fa-search me-2"></i>
-                Search
-              </button>
-            </div>
+            {/* Date search removed — only Today's and Today & Tomorrow buttons are shown per request */}
+            <div className="col-md-6" />
           </div>
         </div>
       </div>
@@ -346,7 +341,7 @@ const AppointmentsPage = () => {
           const tomorrowStr = getTomorrowDate();
           const isToday = appointmentDate === todayStr;
           const isTomorrow = appointmentDate === tomorrowStr;
-          
+
           return (
             <div key={appointment._appointmentAutoId} className="col-lg-4 col-md-6 mb-3">
               <div className={`card h-100 ${isTomorrow ? 'border-warning' : ''}`}>

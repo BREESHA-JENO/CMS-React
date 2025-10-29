@@ -16,11 +16,7 @@ import {
 } from "react-icons/fa";
 import Doctor from "../../components/Doctor/Doctor";
 import ConsultationForm from "../../components/Doctor/ConsultationForm";
-import PrescriptionForm from "../../components/Doctor/PrescriptionForm";
-import LabTestForm from "../../components/Doctor/LabTestForm";
-import CombinedPrescriptionForm from "../../components/Doctor/CombinedPrescriptionForm";
-import EnhancedPrescriptionForm from "../../components/Doctor/EnhancedPrescriptionForm";
-import EnhancedLabTestForm from "../../components/Doctor/EnhancedLabTestForm";
+import UnifiedPrescriptionForm from "../../components/Doctor/UnifiedPrescriptionForm";
 import "../../components/Doctor/Doctor.css";
 import "./DoctorDashboard.css";
 import {
@@ -132,52 +128,35 @@ const DoctorDashboard = () => {
   const fetchStats = React.useCallback(async () => {
     setLoadingStats(true);
     try {
-      // Import the API function we need
-      const { getMyAppointments } = await import('../../Service/doctor_api');
-      
-      // Get all appointments for this doctor
-      const response = await getMyAppointments();
-      const appointments = response.data || [];
-      
-      // Get today's and tomorrow's date strings
-      const today = new Date();
-      const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-      
-      const tomorrow = new Date();
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      const tomorrowStr = `${tomorrow.getFullYear()}-${String(tomorrow.getMonth() + 1).padStart(2, '0')}-${String(tomorrow.getDate()).padStart(2, '0')}`;
-      
-      // Filter appointments by date
-      const todayAppointments = appointments.filter(apt => {
-        const aptDate = String(apt.appoinment_date || apt.appointment_date || apt.date).slice(0, 10);
-        return aptDate === todayStr;
-      });
-      
-      const tomorrowAppointments = appointments.filter(apt => {
-        const aptDate = String(apt.appoinment_date || apt.appointment_date || apt.date).slice(0, 10);
-        return aptDate === tomorrowStr;
-      });
-      
-      // Count consulted (completed) appointments for today
-      const todayConsulted = todayAppointments.filter(apt => 
-        apt.appoinment_status === 'Completed' || apt.appointment_status === 'Completed'
-      ).length;
-      
-      // Calculate remaining appointments for today
-      const todayRemaining = todayAppointments.length - todayConsulted;
-      
-      console.log('Dashboard Stats Calculated:', {
-        todayAppointments: todayAppointments.length,
-        todayConsulted,
-        todayRemaining,
-        tomorrowAppointments: tomorrowAppointments.length
-      });
-      
+      // Prefer authoritative dashboard stats endpoint for these four values
+      const statsRes = await getDoctorDashboardStats();
+      const statsData = statsRes.data || {};
+
+      // Map backend fields into frontend state. Support both old and new backend key names.
+      const todayConsultedVal = statsData.todayConsulted ?? statsData.todayConsultationsDone ?? 0;
+      const todayRemainingVal = statsData.todayRemaining ?? statsData.pendingToday ?? statsData.todayAppointmentsToConsult ?? 0;
+
+      // Compute today's total appointments.
+      // Prefer explicit 'todayTotalAppointments' if present. Otherwise, if backend provides consulted + pending, sum them.
+      let todayAppointmentsVal = 0;
+      if (typeof statsData.todayTotalAppointments !== 'undefined' || typeof statsData.todayTotal !== 'undefined') {
+        todayAppointmentsVal = statsData.todayTotalAppointments ?? statsData.todayTotal ?? 0;
+      } else if (typeof statsData.todayConsultationsDone !== 'undefined' || typeof statsData.pendingToday !== 'undefined') {
+        const consulted = statsData.todayConsultationsDone ?? statsData.todayConsulted ?? 0;
+        const pending = statsData.pendingToday ?? statsData.todayRemaining ?? statsData.todayAppointmentsToConsult ?? 0;
+        todayAppointmentsVal = Number(consulted) + Number(pending);
+      } else {
+        // Fallback to other keys if available
+        todayAppointmentsVal = statsData.totalAppointmentsToConsult ?? statsData.todayAppointmentsToConsult ?? 0;
+      }
+
+      const tomorrowAppointmentsVal = (statsData.tomorrowAppointments ?? statsData.tomorrow) || 0;
+
       setDashboardStats({
-        todayAppointments: todayAppointments.length,
-        todayConsulted,
-        todayRemaining,
-        tomorrowAppointments: tomorrowAppointments.length,
+        todayAppointments: todayAppointmentsVal,
+        todayConsulted: todayConsultedVal,
+        todayRemaining: todayRemainingVal,
+        tomorrowAppointments: tomorrowAppointmentsVal,
       });
     } catch (err) {
       console.error('[Dashboard Stats] Failed to load dashboard statistics:', err.response?.data || err);
@@ -355,50 +334,6 @@ const DoctorDashboard = () => {
         />
       )}
 
-      {activeModal === "medicine" && lastConsultation && (
-        <PrescriptionForm
-          consultation={lastConsultation}
-          staffId={staffId}
-          onSubmit={handlePrescriptionSubmit}
-          onClose={() => setActiveModal(null)}
-        />
-      )}
-
-      {activeModal === "lab" && lastConsultation && (
-        <LabTestForm
-          consultation={lastConsultation}
-          staffId={staffId}
-          onSubmit={handleLabTestSubmit}
-          onClose={() => setActiveModal(null)}
-        />
-      )}
-
-      {activeModal === "combined" && lastConsultation && (
-        <CombinedPrescriptionForm
-          consultation={lastConsultation}
-          staffId={staffId}
-          onSubmit={handleCombinedPrescriptionSubmit}
-          onClose={() => setActiveModal(null)}
-        />
-      )}
-
-      {activeModal === "enhanced-medicine" && lastConsultation && (
-        <EnhancedPrescriptionForm
-          consultation={lastConsultation}
-          staffId={staffId}
-          onSubmit={handlePrescriptionSubmit}
-          onClose={() => setActiveModal(null)}
-        />
-      )}
-
-      {activeModal === "enhanced-lab" && lastConsultation && (
-        <EnhancedLabTestForm
-          consultation={lastConsultation}
-          staffId={staffId}
-          onSubmit={handleLabTestSubmit}
-          onClose={() => setActiveModal(null)}
-        />
-      )}
 
       {showHistoryModal && (
         <div className="modal fade show" style={{ display: "block" }}>
@@ -558,13 +493,13 @@ const DoctorDashboard = () => {
               
               <h6 className="mb-3">Choose Prescription Option:</h6>
               
-              {/* Combined Prescription Button */}
+              {/* Single Prescription Button */}
               <div className="mb-3">
                 <button
                   className="btn btn-primary btn-lg w-100"
                   onClick={() => {
-                    console.log('Combined prescription button clicked');
-                    setActiveModal("combined");
+                    console.log('Unified prescription button clicked');
+                    setActiveModal("prescription");
                   }}
                   style={{
                     background: 'linear-gradient(45deg, #28a745, #17a2b8)',
@@ -573,36 +508,8 @@ const DoctorDashboard = () => {
                 >
                   <i className="fas fa-pills me-2"></i>
                   <i className="fas fa-vial me-2"></i>
-                  Complete Prescription (Medicine + Lab Tests)
+                  Create Prescription
                 </button>
-              </div>
-
-              {/* Individual Prescription Buttons */}
-              <div className="row">
-                <div className="col-md-6 mb-2">
-                  <button
-                    className="btn btn-warning w-100"
-                    onClick={() => {
-                      console.log('Enhanced medicine button clicked');
-                      setActiveModal("enhanced-medicine");
-                    }}
-                  >
-                    <i className="fas fa-pills me-2"></i>
-                    Medicine Only (Enhanced)
-                  </button>
-                </div>
-                <div className="col-md-6 mb-2">
-                  <button
-                    className="btn btn-info w-100"
-                    onClick={() => {
-                      console.log('Enhanced lab test button clicked');
-                      setActiveModal("enhanced-lab");
-                    }}
-                  >
-                    <i className="fas fa-vial me-2"></i>
-                    Lab Test Only (Enhanced)
-                  </button>
-                </div>
               </div>
 
               {/* Close Button */}

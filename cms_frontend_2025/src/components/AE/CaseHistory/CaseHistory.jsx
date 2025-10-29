@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import api from '../../../Utils/axiosConfig';
+import { listAECases } from '../../../Service/ae_api';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './CaseHistory.css';
 import Header1 from '../../../Elements/Header1';
@@ -38,6 +38,7 @@ const CaseHistory = () => {
   // Fetch cases when filter or page changes
   useEffect(() => {
     fetchCases();
+    // eslint-disable-next-line
   }, [filter, currentPage]);
 
   const fetchCases = async () => {
@@ -45,15 +46,13 @@ const CaseHistory = () => {
     setError('');
 
     try {
-      const params = new URLSearchParams();
-      params.append('page', currentPage);
-      
+      // Use API service and object-style params
+      const params = { page: currentPage };
       if (filter !== 'all') {
-        params.append('status', filter === 'active' ? 'Active' : 'Closed');
+        params.status = filter === 'active' ? 'Active' : 'Closed';
       }
-      const response = await api.get(`/ae/case/?page=${currentPage}&status=${filter}`);
+      const response = await listAECases(params);
 
-       // const response = await api.get(`/ae/case/?page=${currentPage}`);      
       // Handle both paginated and non-paginated responses
       if (response.data.results) {
         setCases(response.data.results);
@@ -76,7 +75,6 @@ const CaseHistory = () => {
   const handleFilterChange = (newFilter) => {
     setFilter(newFilter);
     setCurrentPage(1);
-    // Update URL without page reload
     navigate(`/ae-module/case-history?filter=${newFilter}`, { replace: true });
   };
 
@@ -153,20 +151,13 @@ const CaseHistory = () => {
           setDarkMode={setDarkMode}
           notifications={[]}
         />
-
-        <Sidebar
-          open={sidebarOpen}
-          role={role}
-          onClose={handleCloseSidebar}
-        />
-
+        <Sidebar open={sidebarOpen} role={role} onClose={handleCloseSidebar} />
         <div className="case-history-container">
           <div className="loading-state">
             <div className="spinner-large"></div>
             <p>Loading case history...</p>
           </div>
         </div>
-
         <Footer1 />
       </div>
     );
@@ -182,13 +173,7 @@ const CaseHistory = () => {
         setDarkMode={setDarkMode}
         notifications={[]}
       />
-
-      <Sidebar
-        open={sidebarOpen}
-        role={role}
-        onClose={handleCloseSidebar}
-      />
-
+      <Sidebar open={sidebarOpen} role={role} onClose={handleCloseSidebar} />
       <div className="case-history-container">
         <div className="case-history-content">
           {/* Breadcrumb Navigation */}
@@ -341,14 +326,12 @@ const CaseHistory = () => {
                     <i className="fas fa-chevron-left me-2"></i>
                     Previous
                   </button>
-                  
                   <span className="page-info">
                     Page {currentPage} of {totalPages}
                     <span className="total-records">
                       ({filteredCases.length} of {totalCases} cases)
                     </span>
                   </span>
-
                   <button
                     className="pagination-btn"
                     onClick={handleNextPage}
@@ -384,7 +367,6 @@ const CaseHistory = () => {
           )}
         </div>
       </div>
-
       <Footer1 />
     </div>
   );

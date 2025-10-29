@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './ConvertToPermanent.css';
-import api from '../../../Utils/axiosConfig';
+import { getTempPatient, convertToPermanent } from '../../../Service/ae_api';
 import Header1 from '../../../Elements/Header1';
 import Footer1 from '../../../Elements/Footer1';
 import Sidebar from '../../../Elements/Sidebar';
@@ -40,7 +40,7 @@ const ConvertToPermanent = () => {
 
   const fetchTempPatient = async () => {
     try {
-      const response = await api.get(`/ae/temp-patient/${id}/`);
+      const response = await getTempPatient(id);
       const patient = response.data;
       setTempPatient(patient);
 
@@ -142,12 +142,12 @@ const ConvertToPermanent = () => {
     setSuccessMessage('');
 
     try {
-      const response = await api.post(`/ae/temp-patient/${id}/convert/`, formData);
+      const response = await convertToPermanent(id, formData);
       setSuccessMessage(response.data.message);
 
       // Show success for 3 seconds then redirect
       setTimeout(() => {
-        navigate('/receptionist/manage-patients');
+        navigate('/manage-patients');
       }, 3000);
 
     } catch (error) {
@@ -489,7 +489,7 @@ const ConvertToPermanent = () => {
                 <button
                   type="button"
                   className="btn btn-secondary"
-                  onClick={() => navigate(`/ae-module/view-temp-patient/${id}`)}
+                  onClick={() => navigate(`/ae-module/list-temp-patients/${id}`)}
                   disabled={converting}
                 >
                   <i className="fas fa-times me-2"></i>

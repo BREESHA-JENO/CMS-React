@@ -231,7 +231,9 @@
 }
 
 @keyframes doctor-spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* ALERTS */
@@ -741,25 +743,25 @@
   .doctor-dashboard-main {
     padding: 1.5rem 1rem;
   }
-  
+
   .doctor-dashboard-title {
     font-size: 2rem;
   }
-  
+
   .doctor-stats-grid {
     grid-template-columns: 1fr;
     gap: 1.5rem;
   }
-  
+
   .doctor-actions-grid {
     grid-template-columns: 1fr;
     gap: 1.5rem;
   }
-  
+
   .doctor-stat-number {
     font-size: 2rem;
   }
-  
+
   .doctor-action-icon {
     font-size: 3rem;
   }
@@ -823,7 +825,7 @@
   .doctor-dashboard-title {
     font-size: 1.6rem;
   }
-  
+
   .doctor-info-card {
     padding: 1rem 1.5rem;
   }
